@@ -7,7 +7,7 @@ jobs:
     name: Pushes the source code into Google Cloud Storage and Patches a Cloud Function with source code update.
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Push Source Code to Cloud Storage and Patch the cloud function
         id: print_env_vars
         uses: KChaitanyaP/github_actions_gcp@v1.2
