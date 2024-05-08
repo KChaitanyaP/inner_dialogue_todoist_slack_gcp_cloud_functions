@@ -22,4 +22,4 @@ def hello_http(request):
         name = 'World'
     return 'Hello {}!'.format(name)
 
-# Adding this for testing the GitHub Action code 8 May 2024
+# Adding this for testing the GitHub Action code 8 May 2024 evening when its heavily raining
