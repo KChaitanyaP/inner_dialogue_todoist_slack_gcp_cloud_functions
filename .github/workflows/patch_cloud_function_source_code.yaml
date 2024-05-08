@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Push Source Code to Cloud Storage and Patch the cloud function
         id: print_env_vars
-        uses: KChaitanyaP/github_actions_gcp@v1.1
+        uses: KChaitanyaP/github_actions_gcp@v1.2
         with:
           gcp_project: ${{ secrets.GCP_PROJECT }}
           gcp_region: ${{ secrets.GCP_REGION }}
