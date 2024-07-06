@@ -5,3 +5,4 @@ slackclient==2.9.4
 slack_sdk
 uuid
 google-cloud
+google-cloud-storage

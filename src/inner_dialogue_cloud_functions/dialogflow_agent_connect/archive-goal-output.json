@@ -1,0 +1,12 @@
+{
+	"blocks": [
+		{
+			"type": "section",
+			"block_id": "archive_goal_section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "You have successfully archived the following goal: add new goal name here"
+			}
+		}
+	]
+}

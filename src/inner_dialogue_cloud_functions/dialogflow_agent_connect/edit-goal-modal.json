@@ -1,0 +1,102 @@
+{
+    "private_metadata": "goal:add_goal-id-here",
+	"type": "modal",
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"title": {
+		"type": "plain_text",
+		"text": "Edit Goal",
+		"emoji": true
+	},
+    "clear_on_close": true,
+	"blocks": [
+		{
+			"type": "section",
+            "block_id": "edit-goal-pretext",
+			"text": {
+				"type": "plain_text",
+				"text": "Please edit the goal details, start date, end date and add comments",
+				"emoji": true
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "input",
+			"block_id": "edit-goal-name",
+			"element": {
+				"type": "plain_text_input",
+				"multiline": true,
+				"action_id": "goal-input-action",
+				"initial_value": "add goal here"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Goal",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "edit-goal-start-date",
+			"element": {
+				"type": "datepicker",
+				"initial_date": "0000-00-00",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select a date",
+					"emoji": true
+				},
+				"action_id": "start-date-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Start Date",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "edit-goal-end-date",
+			"element": {
+				"type": "datepicker",
+				"initial_date": "0000-00-00",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select a date",
+					"emoji": true
+				},
+				"action_id": "end-date-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "End Date",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "edit-goal-comments",
+			"element": {
+				"type": "plain_text_input",
+				"multiline": true,
+				"action_id": "comments-input-action",
+				"initial_value": "add comments here"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Comments",
+				"emoji": true
+			}
+		}
+	]
+}

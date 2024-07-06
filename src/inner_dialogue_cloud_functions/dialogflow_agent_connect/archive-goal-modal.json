@@ -1,0 +1,41 @@
+{
+	"private_metadata": "goal:add_goal-id-here",
+	"type": "modal",
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"title": {
+		"type": "plain_text",
+		"text": "Archive Goal",
+		"emoji": true
+	},
+	"clear_on_close": true,
+	"blocks": [
+		{
+			"type": "section",
+			"block_id": "header-block",
+			"text": {
+				"type": "mrkdwn",
+				"text": "You are about to *archive* this goal:"
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"block_id": "goal-details-block",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Add your goal here"
+			}
+		}
+	]
+}

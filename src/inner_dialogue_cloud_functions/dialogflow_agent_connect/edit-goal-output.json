@@ -1,0 +1,44 @@
+{
+	"blocks": [
+		{
+			"type": "section",
+			"block_id": "edit_goal_section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "You have successfully updated the goal. Here are the update details:"
+			}
+		},
+		{
+			"type": "section",
+			"block_id": "edit_goal_name",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Goal:*\n`Old`: add old goal name here\n`New`: add new goal name here"
+			}
+		},
+		{
+			"type": "section",
+			"block_id": "edit_goal_start_date",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Start date:*\n`Old`: add old goal name here\n`New`: add new goal name her"
+			}
+		},
+		{
+			"type": "section",
+			"block_id": "edit_goal_end_date",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*End date:*\n`Old`: add old goal name here\n`New`: add new goal name her"
+			}
+		},
+		{
+			"type": "section",
+			"block_id": "edit_goal_comments",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Comments:*\n`Old`: add old goal name here\n`New`: add new goal name her"
+			}
+		}
+	]
+}
