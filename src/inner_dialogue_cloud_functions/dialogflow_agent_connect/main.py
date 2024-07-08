@@ -18,7 +18,6 @@ import functions_framework
 from googleapiclient import discovery
 from slack.signature import SignatureVerifier
 from slack_sdk import WebClient
-import uuid
 from goal_based_modals import *
 from task_based_modals import *
 from activity_based_modals import *
@@ -375,11 +374,11 @@ def kg_search(request):
         slack_response = get_slack_response(session_id, dialogflowcx_response, action_type='direct_modal')
         send_slack_response(slack_response=slack_response, trigger_id=trigger_id, view_id=view_id)
     elif 'finish-goal' in text_input:
-        dialogflowcx_response = create_goal_archive_modal(text_input, type='finish')
+        dialogflowcx_response = create_goal_archive_modal(text_input, action_type='finish')
         slack_response = get_slack_response(session_id, dialogflowcx_response, action_type='direct_modal')
         send_slack_response(slack_response=slack_response, trigger_id=trigger_id, view_id=view_id)
     elif 'activate-goal' in text_input:
-        dialogflowcx_response = create_goal_archive_modal(text_input, type='activate')
+        dialogflowcx_response = create_goal_archive_modal(text_input, action_type='activate')
         slack_response = get_slack_response(session_id, dialogflowcx_response, action_type='direct_modal')
         send_slack_response(slack_response=slack_response, trigger_id=trigger_id, view_id=view_id)
     elif 'Add New Goal' in text_input:

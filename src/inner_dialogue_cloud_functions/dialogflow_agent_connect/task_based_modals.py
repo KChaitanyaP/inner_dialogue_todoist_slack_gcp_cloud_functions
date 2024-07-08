@@ -216,7 +216,7 @@ def create_task_edit_modal(text_input):
                         "text": "Once",
                         "emoji": true
                     },
-                    "value": "once"
+                    "value": "Once"
                 },
                 {
                     "text": {
@@ -224,7 +224,7 @@ def create_task_edit_modal(text_input):
                         "text": "Daily",
                         "emoji": true
                     },
-                    "value": "daily"
+                    "value": "Daily"
                 },
                 {
                     "text": {
@@ -232,7 +232,7 @@ def create_task_edit_modal(text_input):
                         "text": "Weekly",
                         "emoji": true
                     },
-                    "value": "weekly"
+                    "value": "Weekly"
                 },
                 {
                     "text": {
@@ -240,7 +240,7 @@ def create_task_edit_modal(text_input):
                         "text": "Monthly",
                         "emoji": true
                     },
-                    "value": "monthly"
+                    "value": "Monthly"
                 },
                 {
                     "text": {
@@ -248,7 +248,7 @@ def create_task_edit_modal(text_input):
                         "text": "Yearly",
                         "emoji": true
                     },
-                    "value": "yearly"
+                    "value": "Yearly"
                 }
             ],
             "action_id": "frequency_select"
@@ -281,11 +281,10 @@ def create_new_task_modal(goal_id):
         create_goal_template = json.load(json_file)
 
     client = bigquery.Client(credentials=_get_credentials())
-    query = (
-        f"SELECT goal_name, status FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` "
-        f"where query='{goal_id}'")
-    print("QUERY: ", query)
-    query_job = client.query(query)
+    _query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'"
+
+    print("QUERY: ", _query)
+    query_job = client.query(_query)
     result = query_job.result()  # Waits for query to finish
     rows = [dict(row) for row in result]
     goal_start_date = rows[0]['start_date']
@@ -396,13 +395,15 @@ def create_new_task_modal(goal_id):
         elif block['type'] == 'input' and block['element']['action_id'] == 'comments-input-action':
             create_goal_template['blocks'][idx]['element']['initial_value'] = ''
         elif block['type'] == 'input' and block['element']['action_id'] == 'start-date-action':
-            create_goal_template['blocks'][idx]['element']['initial_date'] = goal_start_date
+            create_goal_template['blocks'][idx]['element']['initial_date'] = \
+                goal_start_date if goal_start_date != '' else "0001-01-01"
         elif block['type'] == 'input' and block['element']['action_id'] == 'end-date-action':
-            create_goal_template['blocks'][idx]['element']['initial_date'] = goal_end_date
+            create_goal_template['blocks'][idx]['element']['initial_date'] = \
+                goal_end_date if goal_end_date != '' else "0001-01-01"
         elif 'block_id' in block.keys():
             if block['block_id'] == 'edit-goal-pretext':
-                create_goal_template['blocks'][idx]['text'][
-                    'text'] = 'Please enter following details to create the new task.'
+                create_goal_template['blocks'][idx]['text']['text'] = \
+                    'Please enter following details to create the new task.'
 
     print("create_task_template: ", create_goal_template)
     return create_goal_template

@@ -1,6 +1,15 @@
-from google.cloud import bigquery
-from main import _get_credentials
 import json
+import os
+
+from google.cloud import bigquery
+from google.oauth2 import service_account
+
+
+def _get_credentials():
+    credentials = os.environ.get("CREDENTIALS")
+    svc = json.loads(credentials.replace("\'", "\""))
+    return service_account.Credentials.from_service_account_info(svc)
+
 
 def get_task_list_block(row):
     true = True
@@ -65,6 +74,7 @@ def get_task_list_block(row):
             "type": "divider"
         }
     ]
+
 
 def get_goal_list_block(row):
     true = True
@@ -138,9 +148,9 @@ def get_goal_list_block(row):
 def create_goals_list_modal():
     client = bigquery.Client(credentials=_get_credentials())
 
-    QUERY = ('SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals`')
-    print("QUERY: ", QUERY)
-    query_job = client.query(QUERY)
+    query = 'SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals`'
+    print("QUERY: ", query)
+    query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
     rows = [dict(row) for row in result]
     true = True
@@ -196,9 +206,9 @@ def create_view_goal_tasks_modal(text_input):
     goal_id = text_input.split('view-goal-tasks-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    QUERY = (f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` where goal_id='{goal_id}'")
-    print("create_view_goal_tasks_modal QUERY: ", QUERY)
-    query_job = client.query(QUERY)
+    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` where goal_id='{goal_id}'"
+    print("create_view_goal_tasks_modal query: ", query)
+    query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
     rows = [dict(row) for row in result]
     true = True
@@ -254,9 +264,9 @@ def create_goal_edit_modal(text_input):
     goal_id = text_input.split('edit-goal-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    QUERY = (f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'")
-    print("QUERY: ", QUERY)
-    query_job = client.query(QUERY)
+    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'"
+    print("QUERY: ", query)
+    query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
     rows = [dict(row) for row in result]
     goal_details = rows[0]
@@ -271,24 +281,24 @@ def create_goal_edit_modal(text_input):
         elif block['type'] == 'input' and block['element']['action_id'] == 'comments-input-action':
             edit_goal_template['blocks'][idx]['element']['initial_value'] = goal_details['comments']
         elif block['type'] == 'input' and block['element']['action_id'] == 'start-date-action':
-            edit_goal_template['blocks'][idx]['element']['initial_date'] = goal_details['start_date'] if goal_details[
-                                                                                                             'start_date'] != '' else "0001-01-01"
+            edit_goal_template['blocks'][idx]['element']['initial_date'] = \
+                goal_details['start_date'] if goal_details['start_date'] != '' else "0001-01-01"
         elif block['type'] == 'input' and block['element']['action_id'] == 'end-date-action':
-            edit_goal_template['blocks'][idx]['element']['initial_date'] = goal_details['end_date'] if goal_details[
-                                                                                                           'end_date'] != '' else "0001-01-01"
+            edit_goal_template['blocks'][idx]['element']['initial_date'] = \
+                goal_details['end_date'] if goal_details['end_date'] != '' else "0001-01-01"
 
     print("edit_goal_template: ", edit_goal_template)
     return edit_goal_template
 
 
-def create_goal_archive_modal(text_input, type="archive"):
+def create_goal_archive_modal(text_input, action_type="archive"):
     # type can be finish or archive
-    goal_id = text_input.split(f'{type}-goal-', 1)[-1]
+    goal_id = text_input.split(f'{action_type}-goal-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    QUERY = (f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'")
-    print("QUERY: ", QUERY)
-    query_job = client.query(QUERY)
+    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'"
+    print("QUERY: ", query)
+    query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
     rows = [dict(row) for row in result]
     goal_details = rows[0]
@@ -296,13 +306,16 @@ def create_goal_archive_modal(text_input, type="archive"):
     with open("archive-goal-modal.json", 'r') as json_file:
         archive_goal_template = json.load(json_file)
     print("archive_goal_template: ", archive_goal_template)
-    archive_goal_template['private_metadata'] = "goal_id:" + str(goal_details['goal_id']) + f",action:{type}-goal"
-    archive_goal_template['title']['text'] = f"{type} Goal"
+    archive_goal_template['private_metadata'] = \
+        "goal_id:" + str(goal_details['goal_id']) + f",action:{action_type}-goal"
+    archive_goal_template['title']['text'] = f"{action_type} Goal"
     for idx, block in enumerate(archive_goal_template['blocks']):
         if 'block_id' in block.keys():
             if block['block_id'] == "header-block":
-                archive_goal_template['blocks'][idx]['text'][
-                    'text'] = f"You are about to *{type}* this goal. Please note that all *unfinished* tasks and activities associated with this goal would be automatically set to this status."
+                archive_goal_template['blocks'][idx]['text']['text'] = \
+                    f"You are about to *{action_type}* this goal. " \
+                    f"Please note that all *unfinished* tasks and activities associated with " \
+                    f"this goal would be automatically set to this status."
             if block['block_id'] == "goal-details-block":
                 archive_goal_template['blocks'][idx]['text']['text'] = goal_details['goal_name']
 
