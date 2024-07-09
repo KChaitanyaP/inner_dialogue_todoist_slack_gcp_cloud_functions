@@ -51,6 +51,10 @@ def submit_activity_create_input(activity_id, task_id, input_data):
     activity_details['status'] = task_status
     print("activity_details_created: ", activity_details)
 
+    scheduler_data, cron = prepare_activity_scheduler(activity_details)
+    scheduler = create_scheduler_job(scheduler_data, cron)
+    activity_details['suggestion_notification_scheduler'] = scheduler['name']
+
     bucket_name = "inner-dialogue-conv-data"
     blob_name = f"steps-data/step-{activity_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
@@ -64,10 +68,6 @@ def submit_activity_create_input(activity_id, task_id, input_data):
         create_goal_template = json.load(json_file)
     create_activity_template = copy.deepcopy(create_goal_template)
     create_activity_template['blocks'] = []
-
-    scheduler_data, cron = prepare_activity_scheduler(activity_details)
-    scheduler = create_scheduler_job(scheduler_data, cron)
-    activity_details['suggestion_notification_scheduler'] = scheduler['name']
 
     for idx, block in enumerate(create_goal_template['blocks']):
         if block['block_id'] == 'edit_goal_section':
@@ -260,13 +260,13 @@ def create_activities_bulk(task_details, activity_dates, frequency):
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(blob_name)
 
-        with blob.open("w") as f:
-            f.write(json.dumps(activity_details))
-        print('saved new task to GCS')
-
         scheduler_data, cron = prepare_activity_scheduler(activity_details)
         scheduler = create_scheduler_job(scheduler_data, cron)
         activity_details['suggestion_notification_scheduler'] = scheduler['name']
+
+        with blob.open("w") as f:
+            f.write(json.dumps(activity_details))
+        print('saved new task to GCS')
 
     output_message = {"Once": "once for {activity_dates[0]}",
                       "Daily": f"daily for days between {activity_dates[0]} and {activity_dates[-1]}",
