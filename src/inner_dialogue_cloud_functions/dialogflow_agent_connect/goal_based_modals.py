@@ -1,14 +1,7 @@
 import json
-import os
 
 from google.cloud import bigquery
-from google.oauth2 import service_account
-
-
-def _get_credentials():
-    credentials = os.environ.get("CREDENTIALS")
-    svc = json.loads(credentials.replace("\'", "\""))
-    return service_account.Credentials.from_service_account_info(svc)
+from auth_utils import _get_credentials
 
 
 def get_task_list_block(row):

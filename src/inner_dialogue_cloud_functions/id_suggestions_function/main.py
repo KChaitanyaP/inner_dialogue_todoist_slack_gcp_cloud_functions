@@ -25,4 +25,3 @@ def subscribe(cloud_event: CloudEvent) -> None:
     print(
         "Hello, " + base64.b64decode(cloud_event.data["message"]["data"]).decode() + "!"
     )
-

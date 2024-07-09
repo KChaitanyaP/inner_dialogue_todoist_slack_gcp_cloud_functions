@@ -1,22 +1,14 @@
 import json
-import os
 import copy
 import pytz
-import uuid
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-
+from auth_utils import _get_credentials
 from google.cloud import storage
 from google.cloud import bigquery
-from google.oauth2 import service_account
+from activity_based_submissions import create_activities_bulk
 
 tz = 'Asia/Kolkata'  # current user timezone is Asia/Kolkata, need to make it dynamic
-
-
-def _get_credentials():
-    credentials = os.environ.get("CREDENTIALS")
-    svc = json.loads(credentials.replace("\'", "\""))
-    return service_account.Credentials.from_service_account_info(svc)
 
 
 def submit_task_edit_input(task_id, input_data):
@@ -300,53 +292,3 @@ def get_dates_timedelta(start_date, end_date, frequency='Daily'):
             current_date += timedelta(weeks=1)
 
     return dates
-
-
-def create_activities_bulk(task_details, activity_dates, frequency):
-    now = datetime.now()
-    for i, activity_date in enumerate(activity_dates):
-        frequency_marker = {"Once": "Today",
-                            "Daily": f"on the day {i + 1}",
-                            "Weekly": f"for the week {i + 1}",
-                            "Monthly": f"for the month {i + 1}",
-                            "Yearly": f"for the year {i + 1}"}
-        print(f"trying to create activity for {activity_date}")
-        activity_id = uuid.uuid4()
-        activity_name = f"Do the task {task_details['task_name']} {frequency_marker[frequency]}"
-        activity_comments = "auto-created activity based on task frequency"
-
-        activity_details = {'step_id': str(activity_id), 'task_id': str(task_details['task_id']),
-                            'step_name': activity_name, 'comments': activity_comments,
-                            'created_ts': now.strftime("%Y-%m-%d-%H:%M:%S"), 'modified_ts': "",
-                            'finish_mandatory': "true", 'suggestion_notification_scheduler': "", 'suggestion_text': "",
-                            'suggestion_notification_sent': "", 'estimated_tat': "", 'retry_suggestion': "true",
-                            'responded': "false", 'status': task_details['status']}
-        suggestion_date = activity_date
-        suggestion_time = "10:10"
-        date_object = datetime.strptime(suggestion_date, "%Y-%m-%d")
-        time_object = datetime.strptime(suggestion_time, "%H:%M").time()
-        timezone = pytz.timezone(tz)
-        suggestion_ts = datetime.combine(date_object, time_object)
-        suggestion_ts_local = timezone.localize(suggestion_ts)
-        utc_time = suggestion_ts_local.astimezone(pytz.utc)
-        utc_time_str = utc_time.strftime("%Y-%m-%d-%H:%M:%S")
-        activity_details['suggestion_ts'] = utc_time_str
-
-        print("activity_details_created: ", activity_details)
-
-        bucket_name = "inner-dialogue-conv-data"
-        blob_name = f"steps-data/step-{activity_id}.json"
-        storage_client = storage.Client(credentials=_get_credentials())
-        bucket = storage_client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-
-        with blob.open("w") as f:
-            f.write(json.dumps(activity_details))
-        print('saved new task to GCS')
-
-    output_message = {"Once": "once for {activity_dates[0]}",
-                      "Daily": f"daily for days between {activity_dates[0]} and {activity_dates[-1]}",
-                      "Weekly": f"weekly once between {activity_dates[0]} and {activity_dates[-1]}",
-                      "Monthly": f"monthly once between {activity_dates[0]} and {activity_dates[-1]}",
-                      "Yearly": f"yearly once between {activity_dates[0]} and {activity_dates[-1]}"}
-    return output_message[frequency]

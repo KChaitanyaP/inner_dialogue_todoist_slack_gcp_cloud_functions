@@ -15,15 +15,17 @@
 
 from flask import jsonify
 import functions_framework
-from googleapiclient import discovery
 from slack.signature import SignatureVerifier
 from slack_sdk import WebClient
+from googleapiclient import discovery
 from goal_based_modals import *
 from task_based_modals import *
 from activity_based_modals import *
 from goal_based_submissions import *
 from task_based_submissions import *
 from activity_based_submissions import *
+from auth_utils import _get_credentials
+import os
 
 # preventing infinite looping due to slack text invocations, using global variables caching for cloud function
 # temporary fix as the behaviour is not guaranteed, we will go with GCS saves shortly
@@ -39,13 +41,6 @@ def verify_signature(request):
 
     if not verifier.is_valid_request(request.data, request.headers):
         raise ValueError("Invalid request/credentials.")
-
-
-# [END functions_verify_webhook]
-def _get_credentials():
-    credentials = os.environ.get("CREDENTIALS")
-    svc = json.loads(credentials.replace("\'", "\""))
-    return service_account.Credentials.from_service_account_info(svc)
 
 
 # [START functions_slack_format]
@@ -271,28 +266,6 @@ def update_gcs_session_table(session_id, timestamp, dialogflow_input_loc, dialog
         f.write(json.dumps(_dict))
 
     return blob_name
-
-
-def create_scheduler_jobs():
-    print('attempting to create a dummy scheduler job')
-    gcp_project = 'useful-proposal-424218-t8'
-    gcp_region = 'asia-south1'
-    _parent = f"projects/{gcp_project}/locations/{gcp_region}"
-    scheduler_body = {
-        "pubsubTarget": {
-            "data": "SGksIEhvcGUgeW91IGFyZSBkb2luZyB3ZWxsISE",
-            "topicName": "id-activity-suggestion"
-        },
-        "schedule": "0 11 * * *"
-    }
-    service = discovery.build(
-        "cloudscheduler", "v1", credentials=_get_credentials()
-    )
-    # noqa https://googleapis.github.io/google-api-python-client/docs/dyn/cloudscheduler_v1.projects.locations.jobs.html#create
-    scheduler_jobs_obj = service.projects().locations().jobs()
-    scheduler_job = scheduler_jobs_obj.create(parent=_parent, body=scheduler_body).execute()
-
-    print("scheduler_job: ", scheduler_job)
 
 
 # [START functions_slack_search]
@@ -582,7 +555,6 @@ def kg_search(request):
     print("dialogflow_output_loc: ", dialogflow_output_loc)
     print("slack_response_loc: ", slack_response_loc)
     print("session_table_loc: ", session_table_loc)
-    create_scheduler_jobs()
 
     # if payload['type'] == 'block_actions':
     #    original_message = payload['actions'][0]['value']

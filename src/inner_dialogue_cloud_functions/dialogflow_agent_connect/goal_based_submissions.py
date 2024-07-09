@@ -1,19 +1,13 @@
 import json
-import os
 import copy
 from datetime import datetime
+from auth_utils import _get_credentials
 
 from google.cloud import storage
 from google.cloud import bigquery
-from google.oauth2 import service_account
+
 
 tz = 'Asia/Kolkata'  # current user timezone is Asia/Kolkata, need to make it dynamic
-
-
-def _get_credentials():
-    credentials = os.environ.get("CREDENTIALS")
-    svc = json.loads(credentials.replace("\'", "\""))
-    return service_account.Credentials.from_service_account_info(svc)
 
 
 def submit_goal_edit_input(goal_id, input_data):
