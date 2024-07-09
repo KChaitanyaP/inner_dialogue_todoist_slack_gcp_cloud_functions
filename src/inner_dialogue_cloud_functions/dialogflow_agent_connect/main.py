@@ -311,8 +311,8 @@ def kg_search(request):
                 if 'selected_option' in _input.keys():
                     print("seems like Actions-option-select input")
                     text_input = _input['selected_option']['value']
-                    if _input['action_id'] == 'frequency_select' and text_input in ['once', 'daily', 'weekly',
-                                                                                    'monthly', 'yearly']:
+                    if _input['action_id'] == 'frequency_select' and text_input in ['Once', 'Daily', 'Weekly',
+                                                                                    'Monthly', 'Yearly']:
                         print("seems like a frequency selection input, so ignoring")
                         return '', 200
                     elif _input['action_id'] == 'auto_activity_creation_select' and text_input in ['Yes', 'No']:

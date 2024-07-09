@@ -243,7 +243,7 @@ def create_activities_bulk(task_details, activity_dates, frequency):
                             'responded': "false", 'status': task_details['status']}
         suggestion_date = activity_date
         suggestion_time = "10:10"
-        date_object = datetime.strptime(suggestion_date, "%Y-%m-%d")
+        date_object = datetime.strptime(suggestion_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
         time_object = datetime.strptime(suggestion_time, "%H:%M").time()
         timezone = pytz.timezone(tz)
         suggestion_ts = datetime.combine(date_object, time_object)
@@ -278,7 +278,7 @@ def create_activities_bulk(task_details, activity_dates, frequency):
 
 def prepare_activity_scheduler(activity_details):
     _scheduler_data = str({"step_id": {activity_details['step_id']}})
-    dt = activity_details['suggestion_ts']
+    dt = datetime.strptime(activity_details['suggestion_ts'], "%Y-%m-%d-%H:%M:%S")
     minute = dt.minute
     hour = dt.hour
     day = dt.day
