@@ -58,7 +58,7 @@ Our Cloud Function is subscribed to this Pub/Sub topic and gets triggered automa
 
 -[ ] need to work on automated cloud build from Github repo. 
 
-### Resources
+### General Resources
 
 [^1]: https://www.googlecloudcommunity.com/gc/Cloud-Hub/Cannot-make-a-folder-in-google-cloud-free-tier/m-p/613412#M2699
 [^Cloud_Run_Resource_1]: https://cloud.google.com/python/django/run
@@ -66,3 +66,8 @@ Our Cloud Function is subscribed to this Pub/Sub topic and gets triggered automa
 - https://cloud.google.com/functions/docs/tutorials/slack#functions-deploy-command-python
 - https://cloud.google.com/functions/docs/securing/authenticating
 - https://cloud.google.com/scheduler/docs/tut-gcf-pub-sub
+
+## DialogFlowCX Agent Connect Cloud Function:
+- https://stackoverflow.com/questions/76861768/handle-button-click-events-in-interactive-messages-using-slack-api-with-python-f
+- https://medium.com/google-cloud/cloud-functions-best-practices-2-4-optimize-the-cloud-functions-5874f9d8c8b5
+- https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_fileio_write_read.py

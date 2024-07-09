@@ -273,6 +273,28 @@ def update_gcs_session_table(session_id, timestamp, dialogflow_input_loc, dialog
     return blob_name
 
 
+def create_scheduler_jobs():
+    print('attempting to create a dummy scheduler job')
+    gcp_project = 'useful-proposal-424218-t8'
+    gcp_region = 'asia-south1'
+    _parent = f"projects/{gcp_project}/locations/{gcp_region}"
+    scheduler_body = {
+        "pubsubTarget": {
+            "data": "SGksIEhvcGUgeW91IGFyZSBkb2luZyB3ZWxsISE",
+            "topicName": "id-activity-suggestion"
+        },
+        "schedule": "0 11 * * *"
+    }
+    service = discovery.build(
+        "cloudscheduler", "v1", credentials=_get_credentials()
+    )
+    # noqa https://googleapis.github.io/google-api-python-client/docs/dyn/cloudscheduler_v1.projects.locations.jobs.html#create
+    scheduler_jobs_obj = service.projects().locations().jobs()
+    scheduler_job = scheduler_jobs_obj.create(parent=_parent, body=scheduler_body).execute()
+
+    print("scheduler_job: ", scheduler_job)
+
+
 # [START functions_slack_search]
 @functions_framework.http
 def kg_search(request):
@@ -560,6 +582,7 @@ def kg_search(request):
     print("dialogflow_output_loc: ", dialogflow_output_loc)
     print("slack_response_loc: ", slack_response_loc)
     print("session_table_loc: ", session_table_loc)
+    create_scheduler_jobs()
 
     # if payload['type'] == 'block_actions':
     #    original_message = payload['actions'][0]['value']
