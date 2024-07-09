@@ -277,7 +277,7 @@ def create_activities_bulk(task_details, activity_dates, frequency):
 
 
 def prepare_activity_scheduler(activity_details):
-    _scheduler_data = str({"step_id": {activity_details['step_id']}})
+    _scheduler_data = str(activity_details['step_id'])
     dt = datetime.strptime(activity_details['suggestion_ts'], "%Y-%m-%d-%H:%M:%S")
     minute = dt.minute
     hour = dt.hour

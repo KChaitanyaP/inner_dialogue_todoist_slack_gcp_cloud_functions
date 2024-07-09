@@ -10,7 +10,7 @@ def create_scheduler_job(data_str, schedule):
     _data = data_str.encode("utf-8")
     scheduler_body = {
         "pubsubTarget": {
-            "data": f"{_data}",
+            "data": _data,
             "topicName": f"projects/{gcp_project}/topics/id-activity-suggestion"
         },
         "schedule": f"{schedule}"
