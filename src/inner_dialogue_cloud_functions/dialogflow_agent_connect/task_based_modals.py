@@ -305,7 +305,7 @@ def create_new_task_modal(goal_id):
                         "text": "Once",
                         "emoji": true
                     },
-                    "value": "once"
+                    "value": "Once"
                 },
                 {
                     "text": {
@@ -313,7 +313,7 @@ def create_new_task_modal(goal_id):
                         "text": "Daily",
                         "emoji": true
                     },
-                    "value": "daily"
+                    "value": "Daily"
                 },
                 {
                     "text": {
@@ -321,7 +321,7 @@ def create_new_task_modal(goal_id):
                         "text": "Weekly",
                         "emoji": true
                     },
-                    "value": "weekly"
+                    "value": "Weekly"
                 },
                 {
                     "text": {
@@ -329,7 +329,7 @@ def create_new_task_modal(goal_id):
                         "text": "Monthly",
                         "emoji": true
                     },
-                    "value": "monthly"
+                    "value": "Monthly"
                 },
                 {
                     "text": {
@@ -337,7 +337,7 @@ def create_new_task_modal(goal_id):
                         "text": "Yearly",
                         "emoji": true
                     },
-                    "value": "yearly"
+                    "value": "Yearly"
                 }
             ],
             "action_id": "frequency_select"

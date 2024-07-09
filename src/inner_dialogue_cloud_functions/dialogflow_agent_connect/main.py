@@ -315,6 +315,9 @@ def kg_search(request):
                                                                                     'monthly', 'yearly']:
                         print("seems like a frequency selection input, so ignoring")
                         return '', 200
+                    elif _input['action_id'] == 'auto_activity_creation_select' and text_input in ['Yes', 'No']:
+                        print("seems like a auto_activity_creation_select selection input, so ignoring")
+                        return '', 200
                 else:
                     print("seems like Actions-text input")
                     text_input = _input['text']['text']
@@ -537,6 +540,7 @@ def kg_search(request):
             print('unrecognised action for view_submission: ', metadata['action'])
             return '', 200
     else:
+        print("triggering dialogflow cx with match_intent_body: ", match_intent_body)
         dialogflowcx_response = get_fulfillment(service, session_id, match_intent_body)
         slack_response = get_slack_response(session_id, dialogflowcx_response)
         send_slack_response(slack_response=slack_response, trigger_id=trigger_id)
