@@ -43,55 +43,6 @@ def verify_signature(request):
         raise ValueError("Invalid request/credentials.")
 
 
-# [START functions_slack_format]
-def format_slack_message(query, response):
-    entity = None
-    if (
-            response
-            and response.get("itemListElement") is not None
-            and len(response["itemListElement"]) > 0
-    ):
-        entity = response["itemListElement"][0]["result"]
-
-    message = {
-        "response_type": "in_channel",
-        "text": f"Query: {query}",
-        "attachments": [],
-    }
-
-    attachment = {}
-    if entity:
-        name = entity.get("name", "")
-        description = entity.get("description", "")
-        detailed_desc = entity.get("detailedDescription", {})
-        url = detailed_desc.get("url")
-        article = detailed_desc.get("articleBody")
-        image_url = entity.get("image", {}).get("contentUrl")
-
-        attachment["color"] = "#3367d6"
-        if name and description:
-            attachment["title"] = "{}: {}".format(entity["name"], entity["description"])
-        elif name:
-            attachment["title"] = name
-        if url:
-            attachment["title_link"] = url
-        if article:
-            attachment["text"] = article
-        if image_url:
-            attachment["image_url"] = image_url
-    else:
-        attachment["text"] = "No results match your query."
-    message["attachments"].append(attachment)
-
-    return message
-
-
-# [START functions_slack_request]
-def make_search_request(query):
-    res = query
-    return format_slack_message(query, res)
-
-
 def get_agents_list(service, parent):
     agents = service.projects().locations().agents()
     agents_list = agents.list(parent=parent).execute()

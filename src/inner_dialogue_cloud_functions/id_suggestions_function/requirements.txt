@@ -1,1 +1,8 @@
+google-api-python-client==2.87.0
+flask==3.0.3
 functions-framework==3.5.0
+slackclient==2.9.4
+slack_sdk
+uuid
+google-cloud
+google-cloud-storage
