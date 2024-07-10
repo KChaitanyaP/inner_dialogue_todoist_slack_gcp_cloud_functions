@@ -6,3 +6,4 @@ slack_sdk
 uuid
 google-cloud
 google-cloud-storage
+google-cloud-bigquery

@@ -32,7 +32,7 @@ def get_session_id_block(session_id):
         "elements": [
             {
                 "type": "mrkdwn",
-                "text": f"session id:`{session_id.rsplit('/', 1)[-1]}`"
+                "text": f"session id:`{str(session_id)}`"
             }
         ]
     }]
@@ -86,6 +86,7 @@ def send_slack_response(slack_response, trigger_id=None, **kwargs):
 
 @functions_framework.cloud_event
 def entrypoint(cloud_event: CloudEvent) -> None:
+    print("*" * 20, "starting a new session", "*" * 20)
     activity_id = base64.b64decode(cloud_event.data["message"]["data"]).decode()
     client = bigquery.Client(credentials=_get_credentials())
 
@@ -104,8 +105,9 @@ where step_id='{activity_id}';
 
     activity_suggestion_template = get_basic_suggestion_template(activity_id)
     for block in activity_suggestion_template['blocks']:
-        if block['block_id'] == 'message-block':
-            block['text']['text'] = basic_activity_suggestion_msg(activity_details)
+        if 'block_id' in block.keys():
+            if block['block_id'] == 'message-block':
+                block['text']['text'] = basic_activity_suggestion_msg(activity_details)
 
     print('trying to send suggestion message')
     slack_response = get_slack_response(create_session_id(), activity_suggestion_template,
