@@ -2,7 +2,7 @@ import json
 import copy
 import pytz
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from auth_utils import _get_credentials
 from google.cloud import storage
 from google.cloud import bigquery
@@ -218,6 +218,60 @@ def submit_activity_edit_input(activity_id, input_data):
                     f"`New`: {suggestion_ts_local_msg}"
         }
     }]
+    print("edit_activity_template: ", edit_activity_template)
+    return edit_activity_template
+
+
+def submit_activity_edit_suggestion_time(activity_id, time_delay):
+    client = bigquery.Client(credentials=_get_credentials())
+
+    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}'"
+    print("query: ", query)
+    query_job = client.query(query)
+    result = query_job.result()  # Waits for query to finish
+    rows = [dict(row) for row in result]
+    activity_details = rows[0]
+    print("activity_details previous: ", activity_details)
+
+    activity_details_updated = copy.deepcopy(activity_details)
+    # using the same template as edit-goal so need to refactor to avoid confusion
+    current_utc_time = datetime.now()
+    activity_details_updated['modified_ts'] = current_utc_time.strftime("%Y-%m-%d-%H:%M:%S")
+    future_utc_time = current_utc_time + timedelta(minutes=time_delay)
+    formatted_future_time = future_utc_time.strftime("%Y-%m-%d-%H:%M:%S")
+    activity_details_updated['suggestion_ts'] = formatted_future_time
+
+    scheduler_data, cron = prepare_activity_scheduler(activity_details_updated)
+    scheduler = update_scheduler_job(activity_details['suggestion_notification_scheduler'],
+                                     scheduler_data, cron)
+    activity_details_updated['suggestion_notification_scheduler'] = scheduler['name']
+    print("activity_details_updated: ", activity_details_updated)
+
+    bucket_name = "inner-dialogue-conv-data"
+    blob_name = f"steps-data/step-{activity_id}.json"
+    storage_client = storage.Client(credentials=_get_credentials())
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+
+    with blob.open("w") as f:
+        f.write(json.dumps(activity_details_updated))
+    print('saved edited activity file to GCS')
+    with open("edit-goal-output.json", 'r') as json_file:
+        edit_goal_template = json.load(json_file)
+    edit_activity_template = copy.deepcopy(edit_goal_template)
+
+    suggestion_ts_utc = datetime.strptime(formatted_future_time, "%Y-%m-%d-%H:%M:%S")
+    utc_datetime = pytz.utc.localize(suggestion_ts_utc)
+    local_timezone = pytz.timezone(tz)
+    local_datetime = utc_datetime.astimezone(local_timezone)
+    local_time_string = local_datetime.strftime("%H:%M")
+
+    edit_activity_template['blocks'] = []
+    for idx, block in enumerate(edit_goal_template['blocks']):
+        if block['block_id'] == 'edit_goal_section':
+            block['text']['text'] = f"Sure. I will remind you again in {time_delay} min at around {local_time_string}"
+            edit_activity_template['blocks'] += [block]
+
     print("edit_activity_template: ", edit_activity_template)
     return edit_activity_template
 

@@ -80,7 +80,7 @@ def get_basic_suggestion_template(activity_id):
                         "emoji": true
                     },
                     "style": "primary",
-                    "value": "mark-as-finished-activity-id",
+                    "value": f"mark-as-finished-{activity_id}",
                     "action_id": "button-action"
                 }
             }

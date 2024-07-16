@@ -269,6 +269,9 @@ def kg_search(request):
                     elif _input['action_id'] == 'auto_activity_creation_select' and text_input in ['Yes', 'No']:
                         print("seems like a auto_activity_creation_select selection input, so ignoring")
                         return '', 200
+                elif 'Mark as finished' in _input['text']['text']:
+                    print("seems like Mark as finished input")
+                    text_input = _input['value']
                 else:
                     print("seems like Actions-text input")
                     text_input = _input['text']['text']
@@ -490,6 +493,29 @@ def kg_search(request):
         else:
             print('unrecognised action for view_submission: ', metadata['action'])
             return '', 200
+    elif 'remind-again' in text_input:
+        print("seems like suggestion reminder to be recreated")
+        _temp = text_input.split('remind-again-', 1)[-1]
+        if '-min-' in _temp:
+            time_delay = int(_temp.split('-min-', 1)[0])
+            activity_id = _temp.split('-min-', 1)[1]
+        elif 'later-' in _temp:
+            time_delay = 120        # currently setting to 2 hours later
+            activity_id = _temp.split('later-', 1)[1]
+        else:
+            print(f'unrecognized input for remind-again: {_temp}')
+            return '', 200
+        dialogflowcx_response = submit_activity_edit_suggestion_time(activity_id, time_delay)
+        slack_response = get_slack_response(session_id, dialogflowcx_response,
+                                            action_type='submission_notification')
+        send_slack_response(slack_response=slack_response, trigger_id=trigger_id)
+    elif 'mark-as-finished-' in text_input:
+        print("seems activity is to be marked as finished as per suggestion reminder input")
+        activity_id = text_input.split('mark-as-finished-', 1)[-1]
+        dialogflowcx_response = submit_activity_status_update(activity_id, action_type='finish')
+        slack_response = get_slack_response(session_id, dialogflowcx_response,
+                                            action_type='submission_notification')
+        send_slack_response(slack_response=slack_response, trigger_id=trigger_id)
     else:
         print("triggering dialogflow cx with match_intent_body: ", match_intent_body)
         dialogflowcx_response = get_fulfillment(service, session_id, match_intent_body)
