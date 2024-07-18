@@ -153,7 +153,7 @@ def create_task_archive_modal(text_input, action_type="archive"):
     with open("archive-goal-modal.json", 'r') as json_file:
         archive_goal_template = json.load(json_file)
     print("archive_goal_template: ", archive_goal_template)
-    archive_goal_template['private_metadata'] = "task_id: " + \
+    archive_goal_template['private_metadata'] = "task_id:" + \
                                                 str(task_details['task_id']) + f",action:{action_type}-task"
     archive_goal_template['title']['text'] = f"{action_type} Task"
     for idx, block in enumerate(archive_goal_template['blocks']):
