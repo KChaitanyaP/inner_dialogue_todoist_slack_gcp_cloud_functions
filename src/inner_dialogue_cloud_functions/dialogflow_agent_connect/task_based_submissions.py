@@ -30,8 +30,8 @@ def submit_task_edit_input(task_id, input_data):
     task_details_updated['start_date'] = _selected_start_date if _selected_start_date != '0001-01-01' else ''
     _selected_end_date = input_data['edit-goal-end-date']['end-date-action']['selected_date']
     task_details_updated['end_date'] = _selected_end_date if _selected_end_date != '0001-01-01' else ''
-    _selected_frequency = input_data['frequency_select']['frequency_select']['selected_option']['value']
-    task_details_updated['frequency'] = _selected_frequency if _selected_frequency is not None \
+    _selected_frequency = input_data['frequency_select']['frequency_select']['selected_option']
+    task_details_updated['frequency'] = _selected_frequency['value'] if _selected_frequency is not None \
         else task_details['frequency']
     now = datetime.now()
     task_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")

@@ -269,7 +269,8 @@ def submit_activity_edit_suggestion_time(activity_id, time_delay):
     edit_activity_template['blocks'] = []
     for idx, block in enumerate(edit_goal_template['blocks']):
         if block['block_id'] == 'edit_goal_section':
-            block['text']['text'] = f"Sure. I will remind you again in {time_delay} min at around {local_time_string}"
+            block['text']['text'] = f"Sure. I will remind you again about {activity_details_updated['step_name']} " \
+                                    f"in {time_delay} min at around {local_time_string}"
             edit_activity_template['blocks'] += [block]
 
     print("edit_activity_template: ", edit_activity_template)

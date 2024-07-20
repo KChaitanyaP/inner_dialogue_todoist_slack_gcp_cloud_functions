@@ -90,7 +90,8 @@ def entrypoint(cloud_event: CloudEvent) -> None:
     activity_id = base64.b64decode(cloud_event.data["message"]["data"]).decode()
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"""SELECT steps_table.*, tasks_table.task_name, goals_table.goal_name
+    query = f"""SELECT steps_table.*, 
+tasks_table.task_name, tasks_table.comments as task_comments, goals_table.goal_name 
 FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` as steps_table 
 join `useful-proposal-424218-t8.inner_dialogue_data.tasks` as tasks_table on steps_table.task_id=tasks_table.task_id
 join `useful-proposal-424218-t8.inner_dialogue_data.goals` as goals_table on tasks_table.goal_id=goals_table.goal_id
@@ -107,7 +108,7 @@ where step_id='{activity_id}';
     for block in activity_suggestion_template['blocks']:
         if 'block_id' in block.keys():
             if block['block_id'] == 'message-block':
-                block['text']['text'] = basic_activity_suggestion_msg(activity_details)
+                block['text']['text'] = activity_suggestion_msg_v1(activity_details)
 
     print('trying to send suggestion message')
     slack_response = get_slack_response(create_session_id(), activity_suggestion_template,
