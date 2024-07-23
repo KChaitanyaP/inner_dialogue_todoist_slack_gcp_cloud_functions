@@ -1,6 +1,8 @@
 import json
 from auth_utils import _get_credentials
-from datetime_utils import *
+import pytz
+from datetime import datetime
+from datetime_utils import get_today_date_local
 from google.cloud import bigquery
 
 tz = 'Asia/Kolkata'  # current user timezone is Asia/Kolkata, need to make it dynamic

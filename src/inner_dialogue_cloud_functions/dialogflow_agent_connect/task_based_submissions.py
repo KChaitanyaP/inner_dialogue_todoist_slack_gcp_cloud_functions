@@ -249,11 +249,7 @@ def validate_task_date(task_details, date_key='start_date'):
     timezone = pytz.timezone(tz)
     task_ts = datetime.combine(date_object, time_object)
     task_ts_local = timezone.localize(task_ts)
-    current_datetime = datetime.now(timezone)
-    if task_ts_local < current_datetime:
-        print("task_ts_local < current_datetime")
-        return False
-    elif date_key == 'end_date':
+    if date_key == 'end_date':
         start_date = task_details['start_date'] if task_details['start_date'] != '' else '1900-01-01'
         date_object = datetime.strptime(start_date, "%Y-%m-%d")
         task_ts_start = datetime.combine(date_object, time_object)

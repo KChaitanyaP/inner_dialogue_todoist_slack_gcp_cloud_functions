@@ -2,6 +2,7 @@ import json
 import pytz
 import copy
 from datetime import datetime
+from datetime_utils import get_today_date_local
 from auth_utils import _get_credentials
 from google.cloud import bigquery
 
@@ -152,7 +153,7 @@ def create_new_activity_modal(task_id):
         },
         "accessory": {
             "type": "datepicker",
-            "initial_date": "1990-04-28",
+            "initial_date": get_today_date_local(),
             "placeholder": {
                 "type": "plain_text",
                 "text": "Select a date",
@@ -170,7 +171,7 @@ def create_new_activity_modal(task_id):
             },
             "accessory": {
                 "type": "timepicker",
-                "initial_time": "08:00",
+                "initial_time": "11:00",
                 "timezone": f"{tz}",
                 "placeholder": {
                     "type": "plain_text",
