@@ -322,12 +322,12 @@ def create_activities_bulk(task_details, activity_dates, frequency):
         with blob.open("w") as f:
             f.write(json.dumps(activity_details))
         print('saved new task to GCS')
-
-    output_message = {"Once": "once for {activity_dates[0]}",
-                      "Daily": f"daily for days between {activity_dates[0]} and {activity_dates[-1]}",
-                      "Weekly": f"weekly once between {activity_dates[0]} and {activity_dates[-1]}",
-                      "Monthly": f"monthly once between {activity_dates[0]} and {activity_dates[-1]}",
-                      "Yearly": f"yearly once between {activity_dates[0]} and {activity_dates[-1]}"}
+    _date_range = f"{activity_dates[0].strftime('%Y-%m-%d')} and {activity_dates[-1].strftime('%Y-%m-%d')}"
+    output_message = {"Once": f"once for {activity_dates[0].strftime('%Y-%m-%d')}",
+                      "Daily": f"daily for days between {_date_range}",
+                      "Weekly": f"weekly once between {_date_range}",
+                      "Monthly": f"monthly once between {_date_range}",
+                      "Yearly": f"yearly once between {_date_range}"}
     return output_message[frequency]
 
 
