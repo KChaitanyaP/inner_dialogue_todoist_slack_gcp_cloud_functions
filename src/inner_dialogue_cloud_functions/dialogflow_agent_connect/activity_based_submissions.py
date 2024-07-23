@@ -132,7 +132,7 @@ def submit_activity_status_update(activity_id, action_type='archive'):
     return archive_goal_template
 
 
-def submit_activity_edit_input(activity_id, input_data):
+def submit_single_activity_edit_input(activity_id, input_data):
     client = bigquery.Client(credentials=_get_credentials())
 
     query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}'"
@@ -145,10 +145,13 @@ def submit_activity_edit_input(activity_id, input_data):
 
     activity_details_updated = copy.deepcopy(activity_details)
     # using the same template as edit-goal so need to refactor to avoid confusion
-    activity_details_updated['step_name'] = input_data['edit-goal-name']['goal-input-action']['value']
-    activity_details_updated['comments'] = input_data['edit-goal-comments']['comments-input-action']['value']
+    if 'edit-goal-name' in input_data.keys():
+        activity_details_updated['step_name'] = input_data['edit-goal-name']['goal-input-action']['value']
+    if 'edit-goal-comments' in input_data.keys():
+        activity_details_updated['comments'] = input_data['edit-goal-comments']['comments-input-action']['value']
     now = datetime.now()
     activity_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
+
     suggestion_date = input_data['activity-date-add-step_id-here']['datepicker-action']['selected_date']
     suggestion_time = input_data['activity-time-add-step_id-here']['timepicker-action']['selected_time']
     date_object = datetime.strptime(suggestion_date, "%Y-%m-%d")
@@ -179,14 +182,14 @@ def submit_activity_edit_input(activity_id, input_data):
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
+    if not activity_details == activity_details_updated:
+        with blob.open("w") as f:
+            f.write(json.dumps(activity_details_updated))
+        print('saved edited activity file to GCS')
 
-    with blob.open("w") as f:
-        f.write(json.dumps(activity_details_updated))
-    print('saved edited activity file to GCS')
     with open("edit-goal-output.json", 'r') as json_file:
         edit_goal_template = json.load(json_file)
     edit_activity_template = copy.deepcopy(edit_goal_template)
-
     _suggestion_ts = \
         activity_details['suggestion_ts'] if activity_details['suggestion_ts'] != '' else '1990-01-01-08:00:00'
     suggestion_ts_utc = datetime.strptime(_suggestion_ts, "%Y-%m-%d-%H:%M:%S")
@@ -197,28 +200,66 @@ def submit_activity_edit_input(activity_id, input_data):
     local_time_string = local_datetime.strftime("%H:%M")
 
     edit_activity_template['blocks'] = []
-    for idx, block in enumerate(edit_goal_template['blocks']):
-        if block['block_id'] == 'edit_goal_section':
-            block['text']['text'] = "You have successfully updated the activity. Here are the update details:"
-            edit_activity_template['blocks'] += [block]
-        elif block['block_id'] == 'edit_goal_name':
-            block['text']['text'] = \
-                f"*Activity:*\n`Old`: {activity_details['step_name']}\n`New`: {activity_details_updated['step_name']}"
-            edit_activity_template['blocks'] += [block]
-        elif block['block_id'] == 'edit_goal_comments':
-            block['text']['text'] = \
-                f"*Comments:*\n`Old`: {activity_details['comments']}\n`New`: {activity_details_updated['comments']}"
-            edit_activity_template['blocks'] += [block]
-    edit_activity_template['blocks'] += [{
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": f"*Suggestion timestamp (local timezone):*\n"
-                    f"`Old`: {date_string + ' ' + local_time_string}\n"
-                    f"`New`: {suggestion_ts_local_msg}"
-        }
-    }]
+    if not activity_details == activity_details_updated:
+        for idx, block in enumerate(edit_goal_template['blocks']):
+            if block['block_id'] == 'edit_goal_section':
+                block['text']['text'] = "You have successfully updated the activity. Here are the update details:"
+                edit_activity_template['blocks'] += [block]
+            elif block['block_id'] == 'edit_goal_name':
+                block['text']['text'] = \
+                    f"*Activity:*\n`Old`: " \
+                    f"{activity_details['step_name']}\n`New`: {activity_details_updated['step_name']}"
+                edit_activity_template['blocks'] += [block]
+            elif block['block_id'] == 'edit_goal_comments':
+                block['text']['text'] = \
+                    f"*Comments:*\n`Old`: " \
+                    f"{activity_details['comments']}\n`New`: {activity_details_updated['comments']}"
+                edit_activity_template['blocks'] += [block]
+        edit_activity_template['blocks'] += [{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"*Suggestion timestamp (local timezone):*\n"
+                        f"`Old`: {date_string + ' ' + local_time_string}\n"
+                        f"`New`: {suggestion_ts_local_msg}"
+            }
+        }]
+    else:
+        for idx, block in enumerate(edit_goal_template['blocks']):
+            if block['block_id'] == 'edit_goal_section':
+                block['text']['text'] = "No update for activity details as same details are entered."
+                edit_activity_template['blocks'] += [block]
     print("edit_activity_template: ", edit_activity_template)
+    return edit_activity_template
+
+
+def submit_activity_edit_input(activity_id, input_data):
+    edit_activity_template = submit_single_activity_edit_input(activity_id, input_data)
+    _auto_update = input_data['auto-update-suggestion-times-action']['actionId-auto-update-suggestion-times-action']
+    if len(_auto_update['selected_options']) > 0:
+        keys_to_update = ['activity-date-add-step_id-here', 'activity-time-add-step_id-here']
+        print("trying to auto-update-suggestion-times for all activities with future suggestion times")
+        client = bigquery.Client(credentials=_get_credentials())
+        query = f"""SELECT step_id FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where 
+task_id in (select task_id from  `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}')
+and PARSE_TIMESTAMP('%Y-%m-%d-%H:%M:%S', suggestion_ts) > CURRENT_TIMESTAMP()"""
+        print("query: ", query)
+        query_job = client.query(query)
+        result = query_job.result()  # Waits for query to finish
+        activity_ids = [dict(row) for row in result]
+        print("activity_ids: ", activity_ids)
+        for _id in activity_ids:
+            message_for_id = submit_single_activity_edit_input(
+                _id['step_id'],
+                {key: input_data[key] for key in keys_to_update if key in input_data}
+            )
+            print(_id['step_id'], message_for_id)
+        edit_activity_template['blocks'] += [{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"*Suggestion timestamp auto-updated for {len(activity_ids)} activities:*"
+            }}]
     return edit_activity_template
 
 

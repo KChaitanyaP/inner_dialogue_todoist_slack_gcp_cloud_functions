@@ -50,24 +50,25 @@ def create_activity_edit_modal(text_input):
     local_datetime = utc_datetime.astimezone(local_timezone)
     local_time_string = local_datetime.strftime("%H:%M")
 
-    edit_activity_template['blocks'] += [{
-        "type": "section",
-        "block_id": "activity-date-add-step_id-here",
-        "text": {
-            "type": "mrkdwn",
-            "text": "Pick a date to work on this."
-        },
-        "accessory": {
-            "type": "datepicker",
-            "initial_date": f"{date_string}",
-            "placeholder": {
-                "type": "plain_text",
-                "text": "Select a date",
-                "emoji": true
+    edit_activity_template['blocks'] += [
+        {
+            "type": "section",
+            "block_id": "activity-date-add-step_id-here",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Pick a date to work on this."
             },
-            "action_id": "datepicker-action"
-        }
-    },
+            "accessory": {
+                "type": "datepicker",
+                "initial_date": f"{date_string}",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select a date",
+                    "emoji": true
+                },
+                "action_id": "datepicker-action"
+            }
+        },
         {
             "type": "section",
             "block_id": "activity-time-add-step_id-here",
@@ -86,7 +87,49 @@ def create_activity_edit_modal(text_input):
                 },
                 "action_id": "timepicker-action"
             }
-        }]
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "context",
+            "elements": [
+                {
+                    "type": "mrkdwn",
+                    "text": "Keep this checkbox ticked if you want the suggestion times to be updated automatically "
+                            "for all future activities."
+                }
+            ]
+        },
+        {
+            "type": "actions",
+            "block_id": "auto-update-suggestion-times-action",
+            "elements": [
+                {
+                    "type": "checkboxes",
+                    "initial_options": [
+                        {
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Auto update suggestion time for all future activities*"
+                            },
+                            "value": "selected-auto-update-suggestion-times"
+                        }
+                    ],
+                    "options": [
+                        {
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Auto update suggestion time for all future activities*"
+                            },
+                            "value": "selected-auto-update-suggestion-times"
+                        }
+                    ],
+                    "action_id": "actionId-auto-update-suggestion-times-action"
+                }
+            ]
+        }
+    ]
 
     print("edit_activity_template: ", edit_activity_template)
     return edit_activity_template

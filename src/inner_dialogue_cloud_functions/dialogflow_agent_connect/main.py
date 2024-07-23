@@ -486,7 +486,7 @@ def kg_search(request):
         elif metadata['action'] == 'edit-activity':
             print('trying to edit activity with inputted information')
             activity_id = metadata['activity_id']
-            dialogflowcx_response = submit_activity_edit_input(activity_id, data['view']['state']['values'])
+            dialogflowcx_response = submit_single_activity_edit_input(activity_id, data['view']['state']['values'])
             slack_response = get_slack_response(session_id, dialogflowcx_response,
                                                 action_type='submission_notification')
             send_slack_response(slack_response=slack_response, trigger_id=trigger_id)

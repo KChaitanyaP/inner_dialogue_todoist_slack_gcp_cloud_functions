@@ -103,7 +103,9 @@ where step_id='{activity_id}';
     rows = [dict(row) for row in result]
     activity_details = rows[0]
     print("activity_details along with task name and goal name: ", activity_details)
-
+    if activity_details['status'] != 'ACTIVE':
+        print(f"not sending suggestion as the activity status is not active {activity_details['status']}")
+        return
     activity_suggestion_template = get_basic_suggestion_template(activity_id)
     for block in activity_suggestion_template['blocks']:
         if 'block_id' in block.keys():
