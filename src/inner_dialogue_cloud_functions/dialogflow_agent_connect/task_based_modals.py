@@ -1,7 +1,6 @@
 import json
-import pytz
-from datetime import datetime
 from auth_utils import _get_credentials
+from datetime_utils import *
 from google.cloud import bigquery
 
 tz = 'Asia/Kolkata'  # current user timezone is Asia/Kolkata, need to make it dynamic
@@ -387,8 +386,7 @@ def create_new_task_modal(goal_id):
         elif block['type'] == 'input' and block['element']['action_id'] == 'comments-input-action':
             create_goal_template['blocks'][idx]['element']['initial_value'] = ''
         elif block['type'] == 'input' and block['element']['action_id'] == 'start-date-action':
-            create_goal_template['blocks'][idx]['element']['initial_date'] = \
-                goal_start_date if goal_start_date != '' else "0001-01-01"
+            create_goal_template['blocks'][idx]['element']['initial_date'] = get_today_date_local()
         elif block['type'] == 'input' and block['element']['action_id'] == 'end-date-action':
             create_goal_template['blocks'][idx]['element']['initial_date'] = \
                 goal_end_date if goal_end_date != '' else "0001-01-01"

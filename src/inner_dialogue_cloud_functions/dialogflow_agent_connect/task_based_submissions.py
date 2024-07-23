@@ -241,7 +241,7 @@ def get_activity_suggestion_dates(task_details, frequency):
 
 
 def validate_task_date(task_details, date_key='start_date'):
-    print("task_details: ", task_details, " date_key: ",date_key)
+    print("task_details: ", task_details, " date_key: ", date_key)
     _date = task_details[date_key] if task_details[date_key] != '' else '1900-01-01'
     _time = "00:01"
     date_object = datetime.strptime(_date, "%Y-%m-%d")
