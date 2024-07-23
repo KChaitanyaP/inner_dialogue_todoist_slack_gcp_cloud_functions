@@ -227,7 +227,7 @@ where goal_id='{goal_id}'
 
 def get_activity_suggestion_dates(task_details, frequency):
     if frequency == 'Once':
-        return [task_details['start_date']]
+        return [datetime.strptime(task_details['start_date'], '%Y-%m-%d')]
     elif frequency == 'Daily':
         return get_dates_timedelta(task_details['start_date'], task_details['end_date'], frequency)
     elif frequency == 'Weekly':
