@@ -153,7 +153,7 @@ def submit_single_activity_edit_input(activity_id, input_data, action_type='sing
     activity_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
 
     if action_type=='single_update':
-        suggestion_date = input_data['activity-date-add-step_id-here']['timepicker-action']['selected_time']
+        suggestion_date = input_data['activity-date-add-step_id-here']['datepicker-action']['selected_date']
         suggestion_time = input_data['activity-time-add-step_id-here']['timepicker-action']['selected_time']
     elif action_type=='auto_update':
         suggestion_date = datetime.strptime(activity_details['suggestion_ts'], '%Y-%m-%d-%H:%M:%S').strftime('%Y-%m-%d')
