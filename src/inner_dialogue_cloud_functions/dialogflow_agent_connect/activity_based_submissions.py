@@ -152,10 +152,10 @@ def submit_single_activity_edit_input(activity_id, input_data, action_type='sing
     now = datetime.now()
     activity_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
 
-    if action_type=='single_update':
+    if action_type == 'single_update':
         suggestion_date = input_data['activity-date-add-step_id-here']['datepicker-action']['selected_date']
         suggestion_time = input_data['activity-time-add-step_id-here']['timepicker-action']['selected_time']
-    elif action_type=='auto_update':
+    elif action_type == 'auto_update':
         suggestion_date = datetime.strptime(activity_details['suggestion_ts'], '%Y-%m-%d-%H:%M:%S').strftime('%Y-%m-%d')
         suggestion_time = input_data['activity-time-add-step_id-here']['timepicker-action']['selected_time']
     else:
@@ -253,7 +253,8 @@ and PARSE_TIMESTAMP('%Y-%m-%d-%H:%M:%S', suggestion_ts) > CURRENT_TIMESTAMP()"""
         print("query: ", query)
         query_job = client.query(query)
         result = query_job.result()  # Waits for query to finish
-        activity_ids = [dict(row) for row in result]
+        _activity_ids = [dict(row) for row in result]
+        activity_ids = [t for t in _activity_ids if t['step_id'] != activity_id]
         print("activity_ids: ", activity_ids)
         for _id in activity_ids:
             message_for_id = submit_single_activity_edit_input(
@@ -262,12 +263,13 @@ and PARSE_TIMESTAMP('%Y-%m-%d-%H:%M:%S', suggestion_ts) > CURRENT_TIMESTAMP()"""
                 action_type="auto_update"
             )
             print(_id['step_id'], message_for_id)
-        edit_activity_template['blocks'] += [{
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"*Suggestion timestamp auto-updated for {len(activity_ids)} activities:*"
-            }}]
+        if len(activity_ids) > 0:
+            edit_activity_template['blocks'] += [{
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"*Suggestion timestamp auto-updated for {len(activity_ids)} activities:*"
+                }}]
     return edit_activity_template
 
 
