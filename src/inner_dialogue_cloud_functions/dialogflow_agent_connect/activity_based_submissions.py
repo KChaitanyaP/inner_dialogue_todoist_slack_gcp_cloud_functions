@@ -132,7 +132,7 @@ def submit_activity_status_update(activity_id, action_type='archive'):
     return archive_goal_template
 
 
-def submit_single_activity_edit_input(activity_id, input_data):
+def submit_single_activity_edit_input(activity_id, input_data, action_type='single_update'):
     client = bigquery.Client(credentials=_get_credentials())
 
     query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}'"
@@ -152,8 +152,15 @@ def submit_single_activity_edit_input(activity_id, input_data):
     now = datetime.now()
     activity_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
 
-    suggestion_date = input_data['activity-date-add-step_id-here']['datepicker-action']['selected_date']
-    suggestion_time = input_data['activity-time-add-step_id-here']['timepicker-action']['selected_time']
+    if action_type=='single_update':
+        suggestion_date = input_data['activity-date-add-step_id-here']['timepicker-action']['selected_time']
+        suggestion_time = input_data['activity-time-add-step_id-here']['timepicker-action']['selected_time']
+    elif action_type=='auto_update':
+        suggestion_date = datetime.strptime(activity_details['suggestion_ts'], '%Y-%m-%d-%H:%M:%S').strftime('%Y-%m-%d')
+        suggestion_time = input_data['activity-time-add-step_id-here']['timepicker-action']['selected_time']
+    else:
+        raise NotImplementedError(f"Not implemented action_type: {action_type}")
+
     date_object = datetime.strptime(suggestion_date, "%Y-%m-%d")
     time_object = datetime.strptime(suggestion_time, "%H:%M").time()
     timezone = pytz.timezone(input_data['activity-time-add-step_id-here']['timepicker-action']['timezone'])
@@ -237,7 +244,7 @@ def submit_activity_edit_input(activity_id, input_data):
     edit_activity_template = submit_single_activity_edit_input(activity_id, input_data)
     _auto_update = input_data['auto-update-suggestion-times-action']['actionId-auto-update-suggestion-times-action']
     if len(_auto_update['selected_options']) > 0:
-        keys_to_update = ['activity-date-add-step_id-here', 'activity-time-add-step_id-here']
+        keys_to_update = ['activity-time-add-step_id-here']
         print("trying to auto-update-suggestion-times for all activities with future suggestion times")
         client = bigquery.Client(credentials=_get_credentials())
         query = f"""SELECT step_id FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where 
@@ -251,7 +258,8 @@ and PARSE_TIMESTAMP('%Y-%m-%d-%H:%M:%S', suggestion_ts) > CURRENT_TIMESTAMP()"""
         for _id in activity_ids:
             message_for_id = submit_single_activity_edit_input(
                 _id['step_id'],
-                {key: input_data[key] for key in keys_to_update if key in input_data}
+                {key: input_data[key] for key in keys_to_update if key in input_data},
+                action_type="auto_update"
             )
             print(_id['step_id'], message_for_id)
         edit_activity_template['blocks'] += [{
