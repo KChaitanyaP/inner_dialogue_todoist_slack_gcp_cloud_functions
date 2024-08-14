@@ -391,7 +391,7 @@ def create_new_task_modal(goal_id):
             create_goal_template['blocks'][idx]['element']['initial_date'] = get_today_date_local()
         elif block['type'] == 'input' and block['element']['action_id'] == 'end-date-action':
             create_goal_template['blocks'][idx]['element']['initial_date'] = \
-                goal_end_date if str(goal_end_date) != '' else "0001-01-01"
+                str(goal_end_date) if goal_end_date != '' else "0001-01-01"
         elif 'block_id' in block.keys():
             if block['block_id'] == 'edit-goal-pretext':
                 create_goal_template['blocks'][idx]['text']['text'] = \
