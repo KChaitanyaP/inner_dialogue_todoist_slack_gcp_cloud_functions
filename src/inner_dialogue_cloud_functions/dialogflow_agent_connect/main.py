@@ -77,7 +77,7 @@ def create_session_id():
 def get_dialogflow_inputs(dialogflow_input):
     gcp_project = "scenic-style-432903-u9"  # os.environ.get("GCP_PROJECT")
     gcp_region = "global"  # os.environ.get("GCP_REGION")
-    agent_id = "bf349865-2a23-44ba-84bb-680fd5047e20"
+    agent_id = "30135921-1873-4c51-98b3-182f61591063"
 
     service = discovery.build(
         "dialogflow", "v3", credentials=_get_credentials()
