@@ -13,7 +13,7 @@ def create_activity_edit_modal(text_input):
     activity_id = text_input.split('edit-activity-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` where step_id='{activity_id}'"
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -140,7 +140,7 @@ def create_activity_archive_modal(text_input, action_type="archive"):
     activity_id = text_input.split(f'{action_type}-activity-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` where step_id='{activity_id}'"
     print("query: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish

@@ -75,7 +75,7 @@ def create_session_id():
 
 
 def get_dialogflow_inputs(dialogflow_input):
-    gcp_project = "useful-proposal-424218-t8"  # os.environ.get("GCP_PROJECT")
+    gcp_project = "scenic-style-432903-u9"  # os.environ.get("GCP_PROJECT")
     gcp_region = "global"  # os.environ.get("GCP_REGION")
     agent_id = "bf349865-2a23-44ba-84bb-680fd5047e20"
 

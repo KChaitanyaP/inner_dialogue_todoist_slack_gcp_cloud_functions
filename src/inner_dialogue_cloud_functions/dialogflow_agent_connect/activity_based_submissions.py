@@ -39,7 +39,7 @@ def submit_activity_create_input(activity_id, task_id, input_data):
         suggestion_ts_local_msg = suggestion_ts_local.strftime("%B-%d-%Y %H:%M")
 
     client = bigquery.Client(credentials=_get_credentials())
-    query = f"SELECT task_name, status FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` " \
+    query = f"SELECT task_name, status FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` " \
             f"where task_id='{task_id}'"
     print("QUERY: ", query)
     query_job = client.query(query)
@@ -96,7 +96,7 @@ def submit_activity_status_update(activity_id, action_type='archive'):
     status = {"archive": "ARCHIVED", "finish": "FINISHED"}
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` where step_id='{activity_id}'"
     print("query: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -135,7 +135,7 @@ def submit_activity_status_update(activity_id, action_type='archive'):
 def submit_single_activity_edit_input(activity_id, input_data, action_type='single_update'):
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` where step_id='{activity_id}'"
     print("query: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -247,8 +247,8 @@ def submit_activity_edit_input(activity_id, input_data):
         keys_to_update = ['activity-time-add-step_id-here']
         print("trying to auto-update-suggestion-times for all activities with future suggestion times")
         client = bigquery.Client(credentials=_get_credentials())
-        query = f"""SELECT step_id FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where 
-task_id in (select task_id from  `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}')
+        query = f"""SELECT step_id FROM `scenic-style-432903-u9.inner_dialogue_data.steps` where 
+task_id in (select task_id from  `scenic-style-432903-u9.inner_dialogue_data.steps` where step_id='{activity_id}')
 and PARSE_TIMESTAMP('%Y-%m-%d-%H:%M:%S', suggestion_ts) > CURRENT_TIMESTAMP()"""
         print("query: ", query)
         query_job = client.query(query)
@@ -276,7 +276,7 @@ and PARSE_TIMESTAMP('%Y-%m-%d-%H:%M:%S', suggestion_ts) > CURRENT_TIMESTAMP()"""
 def submit_activity_edit_suggestion_time(activity_id, time_delay):
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where step_id='{activity_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` where step_id='{activity_id}'"
     print("query: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish

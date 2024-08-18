@@ -13,7 +13,7 @@ tz = 'Asia/Kolkata'  # current user timezone is Asia/Kolkata, need to make it dy
 def submit_goal_edit_input(goal_id, input_data):
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.goals` where goal_id='{goal_id}'"
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -65,7 +65,7 @@ def submit_goal_status_update(goal_id, action_type='archive'):
     status = {"archive": "ARCHIVED", "finish": "FINISHED", "activate": "ACTIVE"}
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.goals` where goal_id='{goal_id}'"
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -89,7 +89,7 @@ def submit_goal_status_update(goal_id, action_type='archive'):
     print('goal data file to GCS')
 
     query = (
-        f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` "
+        f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` "
         f"where goal_id='{goal_id}' and status!='FINISHED'")
     print("QUERY: ", query)
     query_job = client.query(query)
@@ -107,7 +107,7 @@ def submit_goal_status_update(goal_id, action_type='archive'):
         print("task previous: ", task, 'task updated: ', task_updated, 'task data file to GCS')
 
         query = (
-            f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` "
+            f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` "
             f"where task_id='{task_updated['task_id']}' and status!='FINISHED'")
         print("ACTIVITY QUERY: ", query)
         query_job = client.query(query)

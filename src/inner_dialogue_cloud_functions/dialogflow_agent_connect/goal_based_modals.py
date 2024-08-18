@@ -141,7 +141,7 @@ def get_goal_list_block(row):
 def create_goals_list_modal():
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = 'SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals`'
+    query = 'SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.goals`'
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -199,7 +199,7 @@ def create_view_goal_tasks_modal(text_input):
     goal_id = text_input.split('view-goal-tasks-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` where goal_id='{goal_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` where goal_id='{goal_id}'"
     print("create_view_goal_tasks_modal query: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -257,7 +257,7 @@ def create_goal_edit_modal(text_input):
     goal_id = text_input.split('edit-goal-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.goals` where goal_id='{goal_id}'"
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -289,7 +289,7 @@ def create_goal_archive_modal(text_input, action_type="archive"):
     goal_id = text_input.split(f'{action_type}-goal-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.goals` where goal_id='{goal_id}'"
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish

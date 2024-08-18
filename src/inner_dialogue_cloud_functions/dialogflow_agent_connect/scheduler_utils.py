@@ -11,7 +11,7 @@ def encode_to_base64(input_string):
 
 
 def create_scheduler_job(data_str, schedule):
-    gcp_project = 'useful-proposal-424218-t8'
+    gcp_project = 'scenic-style-432903-u9'
     gcp_region = 'asia-south1'
     _parent = f"projects/{gcp_project}/locations/{gcp_region}"
 

@@ -14,7 +14,7 @@ tz = 'Asia/Kolkata'  # current user timezone is Asia/Kolkata, need to make it dy
 def submit_task_edit_input(task_id, input_data):
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` where task_id='{task_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u98.inner_dialogue_data.tasks` where task_id='{task_id}'"
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -81,7 +81,7 @@ def submit_task_status_update(task_id, action_type='archive'):
     status = {"archive": "ARCHIVED", "finish": "FINISHED"}
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` where task_id='{task_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` where task_id='{task_id}'"
     print("query: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -104,7 +104,7 @@ def submit_task_status_update(task_id, action_type='archive'):
         f.write(json.dumps(task_details_updated))
     print('task data file to GCS')
 
-    query = f"""SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` \
+    query = f"""SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` \
 where task_id='{task_id}' and status!='FINISHED'
 """
     print("query: ", query)
@@ -157,7 +157,7 @@ def submit_task_create_input(task_id, goal_id, input_data):
     task_details['modified_ts'] = ""
 
     client = bigquery.Client(credentials=_get_credentials())
-    query = f"""SELECT goal_name, status FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` \
+    query = f"""SELECT goal_name, status FROM `scenic-style-432903-u9.inner_dialogue_data.goals` \
 where goal_id='{goal_id}'
 """
     print("QUERY: ", query)

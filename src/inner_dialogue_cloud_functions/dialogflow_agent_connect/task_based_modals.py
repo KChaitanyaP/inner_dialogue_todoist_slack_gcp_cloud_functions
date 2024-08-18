@@ -85,7 +85,7 @@ def create_view_task_activities_modal(text_input):
     task_id = text_input.split('view-task-activities-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` where task_id='{task_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` where task_id='{task_id}'"
     print("create_view_task_activities_modal QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -144,7 +144,7 @@ def create_task_archive_modal(text_input, action_type="archive"):
     task_id = text_input.split(f'{action_type}-task-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` where task_id='{task_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` where task_id='{task_id}'"
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -175,7 +175,7 @@ def create_task_edit_modal(text_input):
     task_id = text_input.split('edit-task-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.tasks` where task_id='{task_id}'"
+    query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` where task_id='{task_id}'"
     print("query: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
@@ -274,7 +274,7 @@ def create_new_task_modal(goal_id):
         create_goal_template = json.load(json_file)
 
     client = bigquery.Client(credentials=_get_credentials())
-    _query = f"SELECT * FROM `useful-proposal-424218-t8.inner_dialogue_data.goals` where goal_id='{goal_id}'"
+    _query = f"SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.goals` where goal_id='{goal_id}'"
 
     print("QUERY: ", _query)
     query_job = client.query(_query)

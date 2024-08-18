@@ -92,9 +92,9 @@ def entrypoint(cloud_event: CloudEvent) -> None:
 
     query = f"""SELECT steps_table.*, 
 tasks_table.task_name, tasks_table.comments as task_comments, goals_table.goal_name 
-FROM `useful-proposal-424218-t8.inner_dialogue_data.steps` as steps_table 
-join `useful-proposal-424218-t8.inner_dialogue_data.tasks` as tasks_table on steps_table.task_id=tasks_table.task_id
-join `useful-proposal-424218-t8.inner_dialogue_data.goals` as goals_table on tasks_table.goal_id=goals_table.goal_id
+FROM `scenic-style-432903-u9.inner_dialogue_data.steps` as steps_table 
+join `scenic-style-432903-u9.inner_dialogue_data.tasks` as tasks_table on steps_table.task_id=tasks_table.task_id
+join `scenic-style-432903-u9.inner_dialogue_data.goals` as goals_table on tasks_table.goal_id=goals_table.goal_id
 where step_id='{activity_id}';
     """
     print("query: ", query)
