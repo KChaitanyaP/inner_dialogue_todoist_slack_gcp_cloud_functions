@@ -159,7 +159,7 @@ def send_slack_response(slack_response, trigger_id=None, **kwargs):
 
 
 def send_gcs_dialogflow_input(session_id, timestamp, dialogflow_input):
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"dialogflow_input/{session_id}-{timestamp}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -172,7 +172,7 @@ def send_gcs_dialogflow_input(session_id, timestamp, dialogflow_input):
 
 
 def send_gcs_dialogflow_output(session_id, timestamp, dialogflowcx_response):
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"dialogflow_output/{session_id}-{timestamp}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -185,7 +185,7 @@ def send_gcs_dialogflow_output(session_id, timestamp, dialogflowcx_response):
 
 
 def send_gcs_slack_response(session_id, timestamp, slack_response):
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"slack_response/{session_id}-{timestamp}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -198,7 +198,7 @@ def send_gcs_slack_response(session_id, timestamp, slack_response):
 
 
 def update_gcs_session_table(session_id, timestamp, dialogflow_input_loc, dialogflow_output_loc, slack_response_loc):
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"session_table/{session_id}-{timestamp}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)

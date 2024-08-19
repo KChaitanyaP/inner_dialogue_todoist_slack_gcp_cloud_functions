@@ -32,7 +32,7 @@ def submit_goal_edit_input(goal_id, input_data):
     goal_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
     print("goal_details_updated: ", goal_details_updated)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"goals-data/goal-{goal_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -79,7 +79,7 @@ def submit_goal_status_update(goal_id, action_type='archive'):
     goal_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
     print("goal_details_updated: ", goal_details_updated)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"goals-data/goal-{goal_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -154,7 +154,7 @@ def submit_goal_create_input(goal_id, input_data):
     goal_details_updated['status'] = "TBD"
     print("goal_details_created: ", goal_details_updated)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"goals-data/goal-{goal_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)

@@ -37,7 +37,7 @@ def submit_task_edit_input(task_id, input_data):
     task_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
     print("task_details_updated: ", task_details_updated)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"tasks-data/task-{task_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -91,11 +91,13 @@ def submit_task_status_update(task_id, action_type='archive'):
 
     task_details_updated = copy.deepcopy(task_details)
     task_details_updated['status'] = status[action_type]
+    task_details_updated['start_date'] = str(task_details_updated['start_date'])
+    task_details_updated['end_date'] = str(task_details_updated['end_date'])
     now = datetime.now()
     task_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
     print("task_details_updated: ", task_details_updated)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"tasks-data/task-{task_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -170,7 +172,7 @@ where goal_id='{goal_id}'
     task_details['status'] = goal_status
     print("task_details_created: ", task_details)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"tasks-data/task-{task_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)

@@ -55,7 +55,7 @@ def submit_activity_create_input(activity_id, task_id, input_data):
     scheduler = create_scheduler_job(scheduler_data, cron)
     activity_details['suggestion_notification_scheduler'] = scheduler['name']
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"steps-data/step-{activity_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -110,7 +110,7 @@ def submit_activity_status_update(activity_id, action_type='archive'):
     activity_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
     print("activity_details_updated: ", activity_details_updated)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"steps-data/step-{activity_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -184,7 +184,7 @@ def submit_single_activity_edit_input(activity_id, input_data, action_type='sing
 
     print("activity_details_updated: ", activity_details_updated)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"steps-data/step-{activity_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -298,7 +298,7 @@ def submit_activity_edit_suggestion_time(activity_id, time_delay):
     activity_details_updated['suggestion_notification_scheduler'] = scheduler['name']
     print("activity_details_updated: ", activity_details_updated)
 
-    bucket_name = "inner-dialogue-conv-data"
+    bucket_name = "id-conversation-data"
     blob_name = f"steps-data/step-{activity_id}.json"
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
@@ -360,7 +360,7 @@ def create_activities_bulk(task_details, activity_dates, frequency):
 
         print("activity_details_created: ", activity_details)
 
-        bucket_name = "inner-dialogue-conv-data"
+        bucket_name = "id-conversation-data"
         blob_name = f"steps-data/step-{activity_id}.json"
         storage_client = storage.Client(credentials=_get_credentials())
         bucket = storage_client.bucket(bucket_name)
