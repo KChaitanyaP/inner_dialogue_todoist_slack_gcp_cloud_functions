@@ -102,6 +102,8 @@ def submit_goal_status_update(goal_id, action_type='archive'):
         task_updated['status'] = status[action_type]
         now = datetime.now()
         task_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
+        task_updated['start_date'] = str(task_updated['start_date'])
+        task_updated['end_date'] = str(task_updated['end_date'])
         blob_name = f"tasks-data/task-{task_updated['task_id']}.json"
         blob = bucket.blob(blob_name)
         with blob.open("w") as f:
