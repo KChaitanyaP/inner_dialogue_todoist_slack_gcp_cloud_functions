@@ -77,6 +77,8 @@ def submit_goal_status_update(goal_id, action_type='archive'):
     goal_details_updated['status'] = status[action_type]
     now = datetime.now()
     goal_details_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
+    goal_details_updated['start_date'] = str(goal_details_updated['start_date'])
+    goal_details_updated['end_date'] = str(goal_details_updated['end_date'])
     print("goal_details_updated: ", goal_details_updated)
 
     bucket_name = "id-conversation-data"
