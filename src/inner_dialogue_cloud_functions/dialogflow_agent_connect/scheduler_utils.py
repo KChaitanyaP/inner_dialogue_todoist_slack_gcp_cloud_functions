@@ -1,6 +1,7 @@
 from googleapiclient import discovery
 from auth_utils import _get_credentials
 import base64
+import googleapiclient
 
 
 def encode_to_base64(input_string):
@@ -41,8 +42,11 @@ def update_scheduler_job(scheduler_name, data_str, schedule):
     )
     # noqa https://googleapis.github.io/google-api-python-client/docs/dyn/cloudscheduler_v1.projects.locations.jobs.html#create
     scheduler_jobs_obj = service.projects().locations().jobs()
-    scheduler_del_job = scheduler_jobs_obj.delete(name=scheduler_name).execute()
-    print("scheduler job deleted:", scheduler_name, " output:", scheduler_del_job)
+    try:
+        scheduler_del_job = scheduler_jobs_obj.delete(name=scheduler_name).execute()
+        print("scheduler job deleted:", scheduler_name, " output:", scheduler_del_job)
+    except googleapiclient.errors.HttpError as error:
+        print("seems job not found to delete, going ahead with creating new job")
 
     new_scheduler = create_scheduler_job(data_str, schedule)
     print("scheduler_job created: ", new_scheduler, " with data:", data_str)
