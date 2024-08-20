@@ -63,7 +63,7 @@ def submit_activity_create_input(activity_id, task_id, input_data):
 
     # with blob.open("w") as f:
     #     f.write(json.dumps(activity_details))
-    blob.upload_from_file(json.dumps(activity_details))
+    blob.upload_from_string(json.dumps(activity_details))
     print('saved new task to GCS')
     with open("edit-goal-output.json", 'r') as json_file:
         create_goal_template = json.load(json_file)
@@ -373,7 +373,7 @@ def create_activities_bulk(task_details, activity_dates, frequency):
 
         # with blob.open("w") as f:
         #     f.write(json.dumps(activity_details))
-        blob.upload_from_file(json.dumps(activity_details))
+        blob.upload_from_string(json.dumps(activity_details))
         print('saved new task to GCS')
     _date_range = f"{activity_dates[0].strftime('%Y-%m-%d')} and {activity_dates[-1].strftime('%Y-%m-%d')}"
     output_message = {"Once": f"once for {activity_dates[0].strftime('%Y-%m-%d')}",
