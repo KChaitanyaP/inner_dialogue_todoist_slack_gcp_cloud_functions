@@ -240,15 +240,29 @@ def kg_search(request):
                         print("trying to get goals list for android app")
                         response_data = {
                             "status": "successfully received your message of Show Goals on ID backend",
-                            "message": "Show Goals call received from android app. Would be responding soon."
+                            "message": "Show Goals call received from android app. Would be responding soon.",
+                            "result": goals_comments_list()
                         }
+                        print("response_data", response_data)
+                        return make_response(jsonify(response_data), 200)
+                    elif text_input == 'Show Tasks':
+                        goal_id = data['goal_id']
+                        print(f"trying to get tasks list for android app for goal id: {goal_id}")
+                        response_data = {
+                            "status": "successfully received your message of Show Goals on ID backend",
+                            "message": "Show Goals call received from android app. Would be responding soon.",
+                            "result": goal_tasks_comments_list(goal_id)
+                        }
+                        print("response_data", response_data)
                         return make_response(jsonify(response_data), 200)
                     else:
                         print("Unidentified data received from android app")
                         response_data = {
                             "status": "successfully received your message of Show Goals on ID backend",
-                            "message": "Unidentified data received from android app. Would be checking soon."
+                            "message": "Unidentified data received from android app. Would be checking soon.",
+                            "result": []
                         }
+                        print("response_data", response_data)
                         return make_response(jsonify(response_data), 200)
 
             if 'challenge' in data:

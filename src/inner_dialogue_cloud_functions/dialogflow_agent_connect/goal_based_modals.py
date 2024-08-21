@@ -138,6 +138,17 @@ def get_goal_list_block(row):
     ]
 
 
+def goals_comments_list():
+    client = bigquery.Client(credentials=_get_credentials())
+
+    query = 'SELECT goal_id, goal_name, comments FROM `scenic-style-432903-u9.inner_dialogue_data.goals`'
+    print("QUERY: ", query)
+    query_job = client.query(query)
+    result = query_job.result()  # Waits for query to finish
+    rows = [dict(row) for row in result]
+    return rows
+
+
 def create_goals_list_modal():
     client = bigquery.Client(credentials=_get_credentials())
 
@@ -193,6 +204,18 @@ def create_goals_list_modal():
     _modal['blocks'] = _blocks
     print("_modal: ", _modal)
     return _modal
+
+
+def goal_tasks_comments_list(goal_id):
+    client = bigquery.Client(credentials=_get_credentials())
+
+    query = f"""SELECT task_id, task_name, comments FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` 
+where goal_id='{goal_id}'"""
+    print("goal_tasks_comments_list QUERY: ", query)
+    query_job = client.query(query)
+    result = query_job.result()  # Waits for query to finish
+    rows = [dict(row) for row in result]
+    return rows
 
 
 def create_view_goal_tasks_modal(text_input):
