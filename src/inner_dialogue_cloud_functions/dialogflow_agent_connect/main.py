@@ -238,7 +238,8 @@ def kg_search(request):
                     text_input = _input['text']['text']
                     if text_input == 'Show Goals':
                         print("trying to get goals list for android app")
-                    return '', 200
+                    return 'Show Goals call received from android app. Would be responding soon.', 200
+
             if 'challenge' in data:
                 verify_signature(request)
                 return jsonify({'challenge': data['challenge']})
