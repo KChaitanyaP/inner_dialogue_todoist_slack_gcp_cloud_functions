@@ -13,7 +13,7 @@
 
 # [START functions_slack_setup]
 
-from flask import jsonify
+from flask import jsonify, make_response
 import functions_framework
 from slack.signature import SignatureVerifier
 from slack_sdk import WebClient
@@ -238,7 +238,18 @@ def kg_search(request):
                     text_input = _input['text']['text']
                     if text_input == 'Show Goals':
                         print("trying to get goals list for android app")
-                    return 'Show Goals call received from android app. Would be responding soon.', 200
+                        response_data = {
+                            "status": "successfully received your message of Show Goals on ID backend",
+                            "message": "Show Goals call received from android app. Would be responding soon."
+                        }
+                        return make_response(jsonify(response_data), 200)
+                    else:
+                        print("Unidentified data received from android app")
+                        response_data = {
+                            "status": "successfully received your message of Show Goals on ID backend",
+                            "message": "Unidentified data received from android app. Would be checking soon."
+                        }
+                        return make_response(jsonify(response_data), 200)
 
             if 'challenge' in data:
                 verify_signature(request)
