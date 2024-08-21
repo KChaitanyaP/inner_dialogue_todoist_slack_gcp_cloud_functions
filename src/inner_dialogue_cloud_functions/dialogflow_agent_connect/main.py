@@ -231,6 +231,14 @@ def kg_search(request):
             data = request.get_json()
             headers = request.headers
             print("data: ", data)
+            if 'type' in data:
+                if data['type'] == 'android_app_actions':
+                    print("call from android app")
+                    _input = data['actions'][0]
+                    text_input = _input['text']['text']
+                    if text_input == 'Show Goals':
+                        print("trying to get goals list for android app")
+                    return '', 200
             if 'challenge' in data:
                 verify_signature(request)
                 return jsonify({'challenge': data['challenge']})
