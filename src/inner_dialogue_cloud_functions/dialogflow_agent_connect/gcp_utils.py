@@ -32,8 +32,7 @@ def read_update_save_gcs(bucket_name, folder_prefix):
             blob_name = f"{folder_prefix}/{os.path.basename(blob.name)}"
             bucket = client.bucket(bucket_name)
             blob = bucket.blob(blob_name)
-            with blob.open("w") as f:
-                f.write(json.dumps(file_content_dict))
+            blob.upload_from_string(json.dumps(file_content_dict))
             print('goal data file to GCS')
 
 
@@ -131,8 +130,7 @@ def create_scheduler_jobs():
         blob = bucket.blob(blob_name)
         activity_details_updated = copy.deepcopy(activity_details)
         activity_details_updated['suggestion_notification_scheduler'] = scheduler_job['name']
-        with blob.open("w") as f:
-            f.write(json.dumps(activity_details_updated))
+        blob.upload_from_string(json.dumps(activity_details_updated))
         print('saved edited activity file to GCS')
 
 

@@ -165,8 +165,7 @@ def send_gcs_dialogflow_input(session_id, timestamp, dialogflow_input):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    with blob.open("w") as f:
-        f.write(json.dumps({"dialogflow_input": dialogflow_input}))
+    blob.upload_from_string(json.dumps({"dialogflow_input": dialogflow_input}))
 
     return blob_name
 
@@ -178,8 +177,7 @@ def send_gcs_dialogflow_output(session_id, timestamp, dialogflowcx_response):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    with blob.open("w") as f:
-        f.write(json.dumps(dialogflowcx_response))
+    blob.upload_from_string(json.dumps(dialogflowcx_response))
 
     return blob_name
 
@@ -191,8 +189,7 @@ def send_gcs_slack_response(session_id, timestamp, slack_response):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    with blob.open("w") as f:
-        f.write(json.dumps(slack_response))
+    blob.upload_from_string(json.dumps(slack_response))
 
     return blob_name
 
@@ -213,8 +210,7 @@ def update_gcs_session_table(session_id, timestamp, dialogflow_input_loc, dialog
         "dialogflow_output_loc": dialogflow_output_loc,
         "slack_response_loc": slack_response_loc
     }
-    with blob.open("w") as f:
-        f.write(json.dumps(_dict))
+    blob.upload_from_string(json.dumps(_dict))
 
     return blob_name
 

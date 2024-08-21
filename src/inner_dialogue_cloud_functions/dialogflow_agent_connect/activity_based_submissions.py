@@ -116,8 +116,7 @@ def submit_activity_status_update(activity_id, action_type='archive'):
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
-    with blob.open("w") as f:
-        f.write(json.dumps(activity_details_updated))
+    blob.upload_from_string(json.dumps(activity_details_updated))
     print('activity data file uploaded to GCS')
 
     with open("archive-goal-output.json", 'r') as json_file:
@@ -191,8 +190,7 @@ def submit_single_activity_edit_input(activity_id, input_data, action_type='sing
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
     if not activity_details == activity_details_updated:
-        with blob.open("w") as f:
-            f.write(json.dumps(activity_details_updated))
+        blob.upload_from_string(json.dumps(activity_details_updated))
         print('saved edited activity file to GCS')
 
     with open("edit-goal-output.json", 'r') as json_file:
@@ -305,8 +303,7 @@ def submit_activity_edit_suggestion_time(activity_id, time_delay):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    with blob.open("w") as f:
-        f.write(json.dumps(activity_details_updated))
+    blob.upload_from_string(son.dumps(activity_details_updated))
     print('saved edited activity file to GCS')
     with open("edit-goal-output.json", 'r') as json_file:
         edit_goal_template = json.load(json_file)

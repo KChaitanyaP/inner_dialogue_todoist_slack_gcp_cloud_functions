@@ -38,8 +38,7 @@ def submit_goal_edit_input(goal_id, input_data):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    with blob.open("w") as f:
-        f.write(json.dumps(goal_details_updated))
+    blob.upload_from_string(json.dumps(goal_details_updated))
     print('saved file to GCS')
     with open("edit-goal-output.json", 'r') as json_file:
         edit_goal_template = json.load(json_file)
@@ -86,8 +85,7 @@ def submit_goal_status_update(goal_id, action_type='archive'):
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
-    with blob.open("w") as f:
-        f.write(json.dumps(goal_details_updated))
+    blob.upload_from_string(json.dumps(goal_details_updated))
     print('goal data file to GCS')
 
     query = (
@@ -106,8 +104,7 @@ def submit_goal_status_update(goal_id, action_type='archive'):
         task_updated['end_date'] = str(task_updated['end_date'])
         blob_name = f"tasks-data/task-{task_updated['task_id']}.json"
         blob = bucket.blob(blob_name)
-        with blob.open("w") as f:
-            f.write(json.dumps(task_updated))
+        blob.upload_from_string(json.dumps(task_updated))
         print("task previous: ", task, 'task updated: ', task_updated, 'task data file to GCS')
 
         query = (
@@ -125,8 +122,7 @@ def submit_goal_status_update(goal_id, action_type='archive'):
             activity_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
             blob_name = f"steps-data/step-{activity_updated['step_id']}.json"
             blob = bucket.blob(blob_name)
-            with blob.open("w") as f:
-                f.write(json.dumps(activity_updated))
+            blob.upload_from_string(json.dumps(activity_updated))
             print("activity previous: ", activity, 'activity updated: ', activity_updated,
                   'activity(step) data file to GCS')
 
@@ -164,8 +160,7 @@ def submit_goal_create_input(goal_id, input_data):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    with blob.open("w") as f:
-        f.write(json.dumps(goal_details_updated))
+    blob.upload_from_string(json.dumps(goal_details_updated))
     print('saved file to GCS')
     with open("edit-goal-output.json", 'r') as json_file:
         create_goal_template = json.load(json_file)

@@ -43,8 +43,7 @@ def submit_task_edit_input(task_id, input_data):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    with blob.open("w") as f:
-        f.write(json.dumps(task_details_updated))
+    blob.upload_from_string(json.dumps(task_details_updated))
     print('saved file to GCS')
     with open("edit-goal-output.json", 'r') as json_file:
         edit_goal_template = json.load(json_file)
@@ -102,8 +101,7 @@ def submit_task_status_update(task_id, action_type='archive'):
     storage_client = storage.Client(credentials=_get_credentials())
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
-    with blob.open("w") as f:
-        f.write(json.dumps(task_details_updated))
+    blob.upload_from_string(json.dumps(task_details_updated))
     print('task data file to GCS')
 
     query = f"""SELECT * FROM `scenic-style-432903-u9.inner_dialogue_data.steps` \
@@ -121,8 +119,7 @@ where task_id='{task_id}' and status!='FINISHED'
         activity_updated['modified_ts'] = now.strftime("%Y-%m-%d-%H:%M:%S")
         blob_name = f"steps-data/step-{activity_updated['step_id']}.json"
         blob = bucket.blob(blob_name)
-        with blob.open("w") as f:
-            f.write(json.dumps(activity_updated))
+        blob.upload_from_string(json.dumps(activity_updated))
         print("activity previous: ", activity, 'activity updated: ', activity_updated,
               'activity(step) data file to GCS')
 
@@ -178,8 +175,7 @@ where goal_id='{goal_id}'
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    with blob.open("w") as f:
-        f.write(json.dumps(task_details))
+    blob.upload_from_string(json.dumps(task_details))
     print('saved new task to GCS')
     with open("edit-goal-output.json", 'r') as json_file:
         create_goal_template = json.load(json_file)
