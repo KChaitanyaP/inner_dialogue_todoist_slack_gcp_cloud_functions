@@ -255,10 +255,10 @@ def create_task_edit_modal(text_input):
             edit_goal_template['blocks'][idx]['element']['initial_value'] = task_details['comments']
         elif block['type'] == 'input' and block['element']['action_id'] == 'start-date-action':
             edit_goal_template['blocks'][idx]['element']['initial_date'] = \
-                task_details['start_date'] if task_details['start_date'] != '' else "0001-01-01"
+                str(task_details['start_date']) if task_details['start_date'] != '' else "0001-01-01"
         elif block['type'] == 'input' and block['element']['action_id'] == 'end-date-action':
             edit_goal_template['blocks'][idx]['element']['initial_date'] = \
-                task_details['end_date'] if task_details['end_date'] != '' else "0001-01-01"
+                str(task_details['end_date']) if task_details['end_date'] != '' else "0001-01-01"
         elif 'block_id' in block.keys():
             if block['block_id'] == 'edit-goal-pretext':
                 edit_goal_template['blocks'][idx]['text'][
