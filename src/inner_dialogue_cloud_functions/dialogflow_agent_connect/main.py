@@ -249,16 +249,26 @@ def kg_search(request):
                         goal_id = data['goal_id']
                         print(f"trying to get tasks list for android app for goal id: {goal_id}")
                         response_data = {
-                            "status": "successfully received your message of Show Goals on ID backend",
-                            "message": "Show Goals call received from android app. Would be responding soon.",
+                            "status": "successfully received your message of Show Tasks on ID backend",
+                            "message": "Show Tasks call received from android app. Would be responding soon.",
                             "result": goal_tasks_comments_list(goal_id)
+                        }
+                        print("response_data", response_data)
+                        return make_response(jsonify(response_data), 200)
+                    elif text_input == 'Show Activities':
+                        task_id = data['task_id']
+                        print(f"trying to get activities list for android app for goal id: {task_id}")
+                        response_data = {
+                            "status": "successfully received your message of Show Activities on ID backend",
+                            "message": "Show Activities call received from android app. Would be responding soon.",
+                            "result": task_activities_comments_list(task_id)
                         }
                         print("response_data", response_data)
                         return make_response(jsonify(response_data), 200)
                     else:
                         print("Unidentified data received from android app")
                         response_data = {
-                            "status": "successfully received your message of Show Goals on ID backend",
+                            "status": "successfully received your message on ID backend",
                             "message": "Unidentified data received from android app. Would be checking soon.",
                             "result": []
                         }

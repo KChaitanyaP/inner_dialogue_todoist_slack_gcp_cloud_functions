@@ -81,6 +81,18 @@ def get_activity_list_block(row):
     ]
 
 
+def task_activities_comments_list(task_id):
+    client = bigquery.Client(credentials=_get_credentials())
+    query = f"""SELECT step_id as activity_id, step_name as activity_name, 
+comments FROM `scenic-style-432903-u9.inner_dialogue_data.steps` 
+where task_id='{task_id}'"""
+    print("task_activities_comments_list QUERY: ", query)
+    query_job = client.query(query)
+    result = query_job.result()  # Waits for query to finish
+    rows = [dict(row) for row in result]
+    return rows
+
+
 def create_view_task_activities_modal(text_input):
     task_id = text_input.split('view-task-activities-', 1)[-1]
     client = bigquery.Client(credentials=_get_credentials())
@@ -280,7 +292,7 @@ def create_new_task_modal(goal_id):
     query_job = client.query(_query)
     result = query_job.result()  # Waits for query to finish
     rows = [dict(row) for row in result]
-    goal_start_date = rows[0]['start_date']
+    # goal_start_date = rows[0]['start_date']
     goal_end_date = rows[0]['end_date']
 
     create_goal_template['private_metadata'] = "goal_id:" + str(goal_id) + ",action:create-task"
