@@ -303,7 +303,7 @@ def submit_activity_edit_suggestion_time(activity_id, time_delay):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
-    blob.upload_from_string(son.dumps(activity_details_updated))
+    blob.upload_from_string(json.dumps(activity_details_updated))
     print('saved edited activity file to GCS')
     with open("edit-goal-output.json", 'r') as json_file:
         edit_goal_template = json.load(json_file)
