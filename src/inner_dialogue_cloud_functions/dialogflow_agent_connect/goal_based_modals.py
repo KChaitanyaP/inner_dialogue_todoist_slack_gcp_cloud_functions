@@ -141,11 +141,15 @@ def get_goal_list_block(row):
 def goals_comments_list():
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = 'SELECT goal_id, goal_name, comments FROM `scenic-style-432903-u9.inner_dialogue_data.goals`'
+    query = """SELECT goal_id, goal_name, start_date, end_date, comments
+FROM `scenic-style-432903-u9.inner_dialogue_data.goals`"""
     print("QUERY: ", query)
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
     rows = [dict(row) for row in result]
+    for row in rows:
+        row['start_date'] = str(row['start_date'])
+        row['end_date'] = str(row['end_date'])
     return rows
 
 
@@ -209,7 +213,8 @@ def create_goals_list_modal():
 def goal_tasks_comments_list(goal_id):
     client = bigquery.Client(credentials=_get_credentials())
 
-    query = f"""SELECT task_id, task_name, comments FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` 
+    query = f"""SELECT task_id, task_name, frequency as activity_frequency, start_date, end_date, comments 
+FROM `scenic-style-432903-u9.inner_dialogue_data.tasks` 
 where goal_id='{goal_id}'"""
     print("goal_tasks_comments_list QUERY: ", query)
     query_job = client.query(query)
