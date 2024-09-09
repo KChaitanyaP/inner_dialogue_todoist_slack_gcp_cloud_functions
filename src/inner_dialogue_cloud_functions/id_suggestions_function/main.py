@@ -4,11 +4,13 @@ from cloudevents.http import CloudEvent
 import functions_framework
 from slack.signature import SignatureVerifier
 from slack_sdk import WebClient
-from auth_utils import _get_credentials
+from auth_utils import _get_credentials, _get_credentials_firebase
 from google.cloud import bigquery
 import os
 from suggestion_messages import *
 from suggestion_blocks import *
+import firebase_admin
+from firebase_admin import auth, credentials, db
 
 tz = 'Asia/Kolkata'  # current user timezone is Asia/Kolkata, need to make it dynamic
 
@@ -117,3 +119,10 @@ where step_id='{activity_id}';
                                         action_type='submission_notification')
     send_slack_response(slack_response=slack_response)
 
+    default_firebase_app = firebase_admin.initialize_app(
+        credential=credentials.Certificate(_get_credentials_firebase()))
+    print("default_firebase_app", default_firebase_app.name)
+    rtdb_ref = db.reference("/")
+    push_message = {"testing": {"source": "python_cloud_function", "message": "Hi!"}}
+    for key, value in push_message.items():
+        rtdb_ref.push().set(value)

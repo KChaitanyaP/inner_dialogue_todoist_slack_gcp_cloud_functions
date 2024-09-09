@@ -7,3 +7,4 @@ uuid
 google-cloud
 google-cloud-storage
 google-cloud-bigquery
+firebase_admin
