@@ -11,6 +11,6 @@ def _get_credentials():
 
 
 def _get_credentials_firebase():
-    credentials = os.environ.get("CREDENTIALS")
+    credentials = os.environ.get("FIREBASE_CREDENTIALS")
     svc = json.loads(credentials.replace("\'", "\""))
     return svc

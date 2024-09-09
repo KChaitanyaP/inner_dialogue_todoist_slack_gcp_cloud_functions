@@ -46,13 +46,13 @@ def verify_signature(request):
 def get_agents_list(service, parent):
     agents = service.projects().locations().agents()
     agents_list = agents.list(parent=parent).execute()
-    print("agents_list: ", agents_list)
+    id-conversation-data("agents_list: ", agents_list)
 
 
 def get_flows_list(service, parent):
     flows = service.projects().locations().agents().flows()
     flows_list = flows.list(parent=parent).execute()
-    print("flows_list: ", flows_list)
+    id-conversation-data("flows_list: ", flows_list)
 
 
 def get_fulfillment(service, parent, match_intent_body):

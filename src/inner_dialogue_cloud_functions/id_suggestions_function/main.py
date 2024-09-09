@@ -11,6 +11,8 @@ from suggestion_messages import *
 from suggestion_blocks import *
 import firebase_admin
 from firebase_admin import auth, credentials, db
+from datetime import datetime
+import pytz
 
 tz = 'Asia/Kolkata'  # current user timezone is Asia/Kolkata, need to make it dynamic
 
@@ -120,9 +122,20 @@ where step_id='{activity_id}';
     send_slack_response(slack_response=slack_response)
 
     default_firebase_app = firebase_admin.initialize_app(
-        credential=credentials.Certificate(_get_credentials_firebase()))
+        credential=credentials.Certificate(_get_credentials_firebase()),
+        options={'databaseURL': 'https://id-test-6628d-default-rtdb.firebaseio.com/'})
     print("default_firebase_app", default_firebase_app.name)
-    rtdb_ref = db.reference("/")
-    push_message = {"testing": {"source": "python_cloud_function", "message": "Hi!"}}
+    print("default_firebase_app project_id", default_firebase_app.project_id)
+    rtdb_ref = db.reference("/Chats")
+
+    current_ts_utc = datetime.now()
+    utc_datetime = pytz.utc.localize(current_ts_utc)
+    local_timezone = pytz.timezone(tz)
+    local_datetime = utc_datetime.astimezone(local_timezone)
+    local_time_string = local_datetime.strftime("%Y-%m-%d-%H:%M:%S")
+    push_message = {"send_msg": {"receiver": os.environ.get("RTDB_RECEIVER_ID"),
+                                 "sender": os.environ.get("RTDB_SENDER_ID"),
+                                 "message": f"{local_time_string}"}}
     for key, value in push_message.items():
         rtdb_ref.push().set(value)
+        print(f"pushed to RTDB: {key}: {value}")
