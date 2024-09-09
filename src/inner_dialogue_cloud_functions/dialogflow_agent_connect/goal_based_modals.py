@@ -220,6 +220,9 @@ where goal_id='{goal_id}'"""
     query_job = client.query(query)
     result = query_job.result()  # Waits for query to finish
     rows = [dict(row) for row in result]
+    for row in rows:
+        row['start_date'] = str(row['start_date'])
+        row['end_date'] = str(row['end_date'])
     return rows
 
 
